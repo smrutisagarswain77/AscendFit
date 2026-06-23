@@ -1,0 +1,63 @@
+# Changelog
+
+All meaningful project changes are recorded here.
+
+---
+
+## 2026-06-23 (Update 2)
+
+**Type:** docs
+
+**Description:**  
+Updated entire documentation system with confirmed AscendFit tech stack: Flutter (Android first), Firebase backend (Auth, Firestore, Storage, FCM), Provider state management, and feature-first modular architecture with Service + Repository pattern. Added `DECISIONS.md` with ADR-001 through ADR-011. Populated Firestore schema, Firebase SDK API surface, Flutter screen catalog, and architecture diagrams. Updated progress and next tasks to reflect stack selection complete and scaffolding as next priority.
+
+**Files Modified:**
+
+* `docs/PROJECT_OVERVIEW.md` (updated)
+* `docs/ARCHITECTURE.md` (updated)
+* `docs/DATABASE_SCHEMA.md` (updated)
+* `docs/API_DOCUMENTATION.md` (updated)
+* `docs/UI_SCREENS.md` (updated)
+* `docs/FEATURES.md` (updated)
+* `docs/CURRENT_PROGRESS.md` (updated)
+* `docs/NEXT_TASKS.md` (updated)
+* `docs/AI_CONTEXT.md` (updated)
+* `docs/DECISIONS.md` (created)
+* `docs/CHANGELOG.md` (updated)
+
+---
+
+## 2026-06-23 (Initial)
+
+**Type:** docs
+
+**Description:**  
+Initialized project governance documentation system. Completed Phase 1 analysis confirming an empty greenfield workspace with no application source code, dependencies, or git repository. Created all required `/docs` files with accurate current-state documentation.
+
+**Files Modified:**
+
+* `docs/PROJECT_OVERVIEW.md` (created)
+* `docs/ARCHITECTURE.md` (created)
+* `docs/DATABASE_SCHEMA.md` (created)
+* `docs/API_DOCUMENTATION.md` (created)
+* `docs/UI_SCREENS.md` (created)
+* `docs/FEATURES.md` (created)
+* `docs/CURRENT_PROGRESS.md` (created)
+* `docs/NEXT_TASKS.md` (created)
+* `docs/CHANGELOG.md` (created)
+* `docs/AI_CONTEXT.md` (created)
+
+---
+
+## Template (for future entries)
+
+**Date:** YYYY-MM-DD
+
+**Type:** feat | fix | refactor | docs | chore
+
+**Description:**  
+Brief summary of what changed and why.
+
+**Files Modified:**
+
+* `path/to/file.ext`
