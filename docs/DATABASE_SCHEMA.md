@@ -1,16 +1,18 @@
 # Database Schema
 
-> **Database:** Cloud Firestore  
+> **Database:** PostgreSQL  
+> **ORM:** Django  
 > **Last verified against source code:** 2026-06-23  
-> **Current state:** Schema designed; Firestore collections not yet created in Firebase project or Dart models.
+> **Source of truth:** Ascension System specification  
+> **Current state:** Schema designed; Django models and migrations not yet created.
 
 ---
 
 ## Overview
 
-AscendFit uses **Cloud Firestore** as its primary data store. Data is organized in top-level collections and user-scoped subcollections keyed by Firebase Auth `uid`.
+AscendFit uses **PostgreSQL** as its primary data store, accessed via **Django ORM**. Data is organized in relational tables with foreign keys to the user model. User-scoped data is filtered in DRF views by authenticated user.
 
-Security is enforced via **Firestore Security Rules** — users may only read/write their own documents unless explicitly public (e.g., exercise catalog).
+Security is enforced via **JWT authentication** and **DRF permission classes** — users may only access their own records unless explicitly public (e.g., exercise catalog).
 
 ---
 
@@ -18,342 +20,303 @@ Security is enforced via **Firestore Security Rules** — users may only read/wr
 
 ```mermaid
 erDiagram
-    AUTH_USER ||--|| USER_PROFILE : "uid = doc id"
-    USER_PROFILE ||--o{ WORKOUT : "subcollection"
-    USER_PROFILE ||--o{ XP_TRANSACTION : "subcollection"
-    USER_PROFILE ||--o{ QUEST_PROGRESS : "subcollection"
-    WORKOUT ||--o{ WORKOUT_EXERCISE : "embedded array"
-    EXERCISE_CATALOG ||--o{ WORKOUT_EXERCISE : "referenced by id"
-    QUEST_TEMPLATE ||--o{ QUEST_PROGRESS : "referenced by id"
+    USER ||--|| USER_PROFILE : "OneToOne"
+    USER ||--o{ WORKOUT : "owns"
+    USER ||--o{ XP_TRANSACTION : "owns"
+    USER ||--o{ QUEST_PROGRESS : "owns"
+    WORKOUT ||--o{ WORKOUT_EXERCISE : "contains"
+    EXERCISE ||--o{ WORKOUT_EXERCISE : "referenced by"
+    QUEST_TEMPLATE ||--o{ QUEST_PROGRESS : "referenced by"
 
-    AUTH_USER {
-        string uid PK "Firebase Auth UID"
-        string email
+    USER {
+        int id PK
+        string email UK
+        string password_hash
+        boolean is_active
+        datetime date_joined
     }
 
     USER_PROFILE {
-        string uid PK "users/{uid}"
-        string displayName
-        string email
-        string avatarUrl
+        int id PK
+        int user_id FK UK
+        string display_name
+        string avatar_url
         int level
-        int totalXp
-        int currentStreak
-        timestamp createdAt
-        timestamp updatedAt
-        map preferences
+        int total_xp
+        int current_streak
+        int longest_streak
+        jsonb preferences
+        string fcm_token
+        datetime created_at
+        datetime updated_at
     }
 
     WORKOUT {
-        string id PK "users/{uid}/workouts/{id}"
+        int id PK
+        int user_id FK
         string title
         string status "planned|active|completed"
-        timestamp startedAt
-        timestamp completedAt
-        int durationSeconds
-        int xpEarned
-        array exercises "WorkoutExercise[]"
+        datetime started_at
+        datetime completed_at
+        int duration_seconds
+        int xp_earned
+        text notes
+        datetime created_at
+        datetime updated_at
     }
 
-    EXERCISE_CATALOG {
-        string id PK "exercises/{id}"
+    WORKOUT_EXERCISE {
+        int id PK
+        int workout_id FK
+        int exercise_id FK
+        string name "denormalized"
+        jsonb sets "reps, weight, completed"
+        int order_index
+    }
+
+    EXERCISE {
+        int id PK
         string name
-        string muscleGroup
+        string muscle_group
         string equipment
         string difficulty
-        boolean isActive
+        text instructions
+        boolean is_active
     }
 
     XP_TRANSACTION {
-        string id PK "users/{uid}/xp_transactions/{id}"
+        int id PK
+        int user_id FK
         int amount
-        string source "workout|quest|bonus"
-        string referenceId
-        timestamp earnedAt
+        string source "workout|quest|bonus|streak"
+        string reference_id
+        string description
+        datetime earned_at
     }
 
     QUEST_TEMPLATE {
-        string id PK "quests/{id}"
+        int id PK
         string title
-        string description
+        text description
         string type "daily|weekly"
-        int xpReward
-        map criteria
-        boolean isActive
+        int xp_reward
+        jsonb criteria
+        boolean is_active
     }
 
     QUEST_PROGRESS {
-        string id PK "users/{uid}/quest_progress/{id}"
-        string questId FK
+        int id PK
+        int user_id FK
+        int quest_id FK
+        string title "denormalized"
         string status "active|completed|claimed"
         int progress
         int target
-        timestamp assignedAt
-        timestamp completedAt
+        int xp_reward
+        datetime assigned_at
+        datetime completed_at
+        datetime claimed_at
     }
 ```
 
 ---
 
-## Collections
+## Tables
 
-### `users/{uid}`
+### `auth_user` (Django built-in, extended via profile)
 
-User profile document. Document ID matches Firebase Auth UID.
+Django's default user model (or custom user with email as username).
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `uid` | string | Required, = doc ID | Firebase Auth UID |
-| `email` | string | Required | User email |
-| `displayName` | string | Optional | Display name |
-| `avatarUrl` | string | Optional | Firebase Storage URL |
-| `level` | int | Default: 1 | Current level |
-| `totalXp` | int | Default: 0 | Lifetime XP |
-| `currentStreak` | int | Default: 0 | Consecutive workout days |
-| `longestStreak` | int | Default: 0 | Best streak record |
-| `preferences` | map | Optional | `{ units: 'metric', notificationsEnabled: true }` |
-| `fcmToken` | string | Optional | Latest FCM device token |
-| `createdAt` | timestamp | Required | Profile creation time |
-| `updatedAt` | timestamp | Required | Last profile update |
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | User ID |
+| `email` | varchar | UNIQUE, NOT NULL | Login email |
+| `password` | varchar | NOT NULL | Hashed password |
+| `is_active` | boolean | DEFAULT true | Account active flag |
+| `date_joined` | timestamptz | NOT NULL | Registration time |
 
-**Relationships:** Parent of `workouts`, `xp_transactions`, `quest_progress` subcollections.
+**Relationships:** OneToOne with `user_profiles`; FK parent of workouts, XP, quest progress.
 
-**Indexes:** None required for direct document read by UID.
+---
 
-**Security Rule (planned):**
-```
-match /users/{userId} {
-  allow read, write: if request.auth != null && request.auth.uid == userId;
-}
-```
+### `user_profiles`
 
-**Example Record:**
+Extended profile data (Django app: `accounts`).
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Profile ID |
+| `user_id` | int | FK → auth_user, UNIQUE | Owner |
+| `display_name` | varchar | NULL | Display name |
+| `avatar` | varchar | NULL | Media file path or URL |
+| `level` | int | DEFAULT 1 | Current level |
+| `total_xp` | int | DEFAULT 0 | Lifetime XP |
+| `current_streak` | int | DEFAULT 0 | Consecutive workout days |
+| `longest_streak` | int | DEFAULT 0 | Best streak record |
+| `preferences` | jsonb | DEFAULT `{}` | `{ units, notifications_enabled }` |
+| `fcm_token` | varchar | NULL | Push notification device token |
+| `created_at` | timestamptz | NOT NULL | Profile creation |
+| `updated_at` | timestamptz | NOT NULL | Last update |
+
+**Indexes:** `user_id` (unique)
+
+**Example Row:**
 ```json
 {
-  "uid": "abc123firebaseuid",
-  "email": "user@example.com",
-  "displayName": "Alex Trainer",
-  "avatarUrl": "https://firebasestorage.googleapis.com/.../avatar.jpg",
+  "user_id": 1,
+  "display_name": "Alex Trainer",
+  "avatar": "/media/users/1/avatar.jpg",
   "level": 5,
-  "totalXp": 1250,
-  "currentStreak": 7,
-  "longestStreak": 14,
-  "preferences": {
-    "units": "metric",
-    "notificationsEnabled": true
-  },
-  "createdAt": "2026-06-01T08:00:00Z",
-  "updatedAt": "2026-06-23T10:30:00Z"
+  "total_xp": 1250,
+  "current_streak": 7,
+  "longest_streak": 14,
+  "preferences": { "units": "metric", "notifications_enabled": true }
 }
 ```
 
 ---
 
-### `users/{uid}/workouts/{workoutId}`
+### `workouts`
 
-User workout sessions (subcollection).
+User workout sessions (Django app: `workouts`).
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | string | = doc ID | Workout document ID |
-| `title` | string | Required | Workout name |
-| `status` | string | `planned`, `active`, `completed` | Session state |
-| `startedAt` | timestamp | Optional | When session started |
-| `completedAt` | timestamp | Optional | When session finished |
-| `durationSeconds` | int | Optional | Total duration |
-| `xpEarned` | int | Default: 0 | XP awarded on completion |
-| `exercises` | array | Optional | Embedded exercise entries |
-| `notes` | string | Optional | User notes |
-| `createdAt` | timestamp | Required | Creation time |
-| `updatedAt` | timestamp | Required | Last update |
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Workout ID |
+| `user_id` | int | FK → auth_user | Owner |
+| `title` | varchar | NOT NULL | Workout name |
+| `status` | varchar | CHECK | `planned`, `active`, `completed` |
+| `started_at` | timestamptz | NULL | Session start |
+| `completed_at` | timestamptz | NULL | Session finish |
+| `duration_seconds` | int | NULL | Total duration |
+| `xp_earned` | int | DEFAULT 0 | XP awarded on completion |
+| `notes` | text | NULL | User notes |
+| `created_at` | timestamptz | NOT NULL | Creation time |
+| `updated_at` | timestamptz | NOT NULL | Last update |
 
-**Embedded `exercises[]` item:**
+**Indexes:**
+- `(user_id, status, created_at DESC)` — list workouts by status
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `exerciseId` | string | Reference to `exercises/{id}` |
-| `name` | string | Denormalized exercise name |
-| `sets` | array | `{ reps, weight, completed }` |
+---
 
-**Indexes (planned):**
-- `status` + `createdAt` DESC (list user workouts by status)
+### `workout_exercises`
 
-**Example Record:**
+Exercises within a workout session.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Row ID |
+| `workout_id` | int | FK → workouts | Parent workout |
+| `exercise_id` | int | FK → exercises | Catalog reference |
+| `name` | varchar | NOT NULL | Denormalized exercise name |
+| `sets` | jsonb | NOT NULL | `[{ reps, weight, completed }]` |
+| `order_index` | int | DEFAULT 0 | Display order |
+
+**Example `sets` JSON:**
 ```json
-{
-  "id": "workout_001",
-  "title": "Push Day",
-  "status": "completed",
-  "startedAt": "2026-06-23T07:00:00Z",
-  "completedAt": "2026-06-23T07:45:00Z",
-  "durationSeconds": 2700,
-  "xpEarned": 75,
-  "exercises": [
-    {
-      "exerciseId": "ex_bench_press",
-      "name": "Bench Press",
-      "sets": [
-        { "reps": 10, "weight": 60, "completed": true },
-        { "reps": 8, "weight": 65, "completed": true }
-      ]
-    }
-  ],
-  "createdAt": "2026-06-23T06:55:00Z",
-  "updatedAt": "2026-06-23T07:45:00Z"
-}
+[
+  { "reps": 10, "weight": 60, "completed": true },
+  { "reps": 8, "weight": 65, "completed": true }
+]
 ```
 
 ---
 
-### `exercises/{exerciseId}`
+### `exercises`
 
-Global exercise catalog (read-only for users, admin-write).
+Global exercise catalog (Django app: `exercises`). Read-only for regular users.
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | string | = doc ID | Exercise ID |
-| `name` | string | Required | Exercise name |
-| `muscleGroup` | string | Required | e.g., `chest`, `legs` |
-| `equipment` | string | Optional | e.g., `barbell`, `bodyweight` |
-| `difficulty` | string | Optional | `beginner`, `intermediate`, `advanced` |
-| `instructions` | string | Optional | How-to text |
-| `isActive` | boolean | Default: true | Soft delete flag |
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Exercise ID |
+| `name` | varchar | NOT NULL | Exercise name |
+| `muscle_group` | varchar | NOT NULL | e.g., `chest`, `legs` |
+| `equipment` | varchar | NULL | e.g., `barbell`, `bodyweight` |
+| `difficulty` | varchar | NULL | `beginner`, `intermediate`, `advanced` |
+| `instructions` | text | NULL | How-to text |
+| `is_active` | boolean | DEFAULT true | Soft delete flag |
 
-**Indexes (planned):**
-- `muscleGroup` + `name` ASC
-- `isActive` + `name` ASC
+**Indexes:**
+- `(muscle_group, name)`
+- `(is_active, name)`
 
-**Security Rule (planned):**
-```
-match /exercises/{exerciseId} {
-  allow read: if request.auth != null;
-  allow write: if false; // Admin via Cloud Functions or console only
-}
-```
+---
 
-**Example Record:**
+### `xp_transactions`
+
+XP earn history (Django app: `gamification`).
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Transaction ID |
+| `user_id` | int | FK → auth_user | Owner |
+| `amount` | int | NOT NULL | XP earned (positive) |
+| `source` | varchar | NOT NULL | `workout`, `quest`, `bonus`, `streak` |
+| `reference_id` | varchar | NULL | Related workout/quest ID |
+| `description` | varchar | NULL | Human-readable label |
+| `earned_at` | timestamptz | NOT NULL | When XP was earned |
+
+**Indexes:**
+- `(user_id, earned_at DESC)` — XP history timeline
+
+---
+
+### `quest_templates`
+
+Global quest definitions (Django app: `gamification`). Admin-managed.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Quest template ID |
+| `title` | varchar | NOT NULL | Quest title |
+| `description` | text | NOT NULL | Quest description |
+| `type` | varchar | NOT NULL | `daily`, `weekly` |
+| `xp_reward` | int | NOT NULL | XP on completion |
+| `criteria` | jsonb | NOT NULL | `{ type, target }` |
+| `is_active` | boolean | DEFAULT true | Available for assignment |
+
+**Example `criteria`:**
 ```json
-{
-  "id": "ex_bench_press",
-  "name": "Bench Press",
-  "muscleGroup": "chest",
-  "equipment": "barbell",
-  "difficulty": "intermediate",
-  "instructions": "Lie flat on bench, lower bar to chest, press up.",
-  "isActive": true
-}
+{ "type": "complete_workout", "target": 1 }
 ```
 
 ---
 
-### `users/{uid}/xp_transactions/{transactionId}`
+### `quest_progress`
 
-XP earn history (subcollection).
+Per-user quest assignment and progress.
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | string | = doc ID | Transaction ID |
-| `amount` | int | Required | XP earned (positive) |
-| `source` | string | `workout`, `quest`, `bonus`, `streak` | Origin type |
-| `referenceId` | string | Optional | Related workout/quest ID |
-| `description` | string | Optional | Human-readable label |
-| `earnedAt` | timestamp | Required | When XP was earned |
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | serial | PK | Progress ID |
+| `user_id` | int | FK → auth_user | Owner |
+| `quest_id` | int | FK → quest_templates | Template reference |
+| `title` | varchar | NOT NULL | Denormalized quest title |
+| `status` | varchar | NOT NULL | `active`, `completed`, `claimed` |
+| `progress` | int | DEFAULT 0 | Current progress count |
+| `target` | int | NOT NULL | Goal to complete |
+| `xp_reward` | int | NOT NULL | Denormalized reward |
+| `assigned_at` | timestamptz | NOT NULL | Assignment time |
+| `completed_at` | timestamptz | NULL | Target met |
+| `claimed_at` | timestamptz | NULL | Reward claimed |
 
-**Indexes (planned):**
-- `earnedAt` DESC (XP history timeline)
-
-**Example Record:**
-```json
-{
-  "id": "xp_001",
-  "amount": 75,
-  "source": "workout",
-  "referenceId": "workout_001",
-  "description": "Completed Push Day",
-  "earnedAt": "2026-06-23T07:45:00Z"
-}
-```
+**Indexes:**
+- `(user_id, status, assigned_at DESC)`
 
 ---
 
-### `quests/{questId}`
-
-Global quest templates (admin-defined, user-readable).
-
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | string | = doc ID | Quest template ID |
-| `title` | string | Required | Quest title |
-| `description` | string | Required | Quest description |
-| `type` | string | `daily`, `weekly` | Quest cadence |
-| `xpReward` | int | Required | XP on completion |
-| `criteria` | map | Required | `{ type: 'complete_workout', target: 1 }` |
-| `isActive` | boolean | Default: true | Available for assignment |
-
-**Example Record:**
-```json
-{
-  "id": "quest_daily_workout",
-  "title": "Daily Grind",
-  "description": "Complete 1 workout today",
-  "type": "daily",
-  "xpReward": 50,
-  "criteria": { "type": "complete_workout", "target": 1 },
-  "isActive": true
-}
-```
-
----
-
-### `users/{uid}/quest_progress/{progressId}`
-
-Per-user quest assignment and progress (subcollection).
-
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `id` | string | = doc ID | Progress document ID |
-| `questId` | string | Required | Reference to `quests/{id}` |
-| `title` | string | Required | Denormalized quest title |
-| `status` | string | `active`, `completed`, `claimed` | Progress state |
-| `progress` | int | Default: 0 | Current progress count |
-| `target` | int | Required | Goal to complete |
-| `xpReward` | int | Required | Denormalized reward |
-| `assignedAt` | timestamp | Required | When quest was assigned |
-| `completedAt` | timestamp | Optional | When target was met |
-| `claimedAt` | timestamp | Optional | When reward was claimed |
-
-**Indexes (planned):**
-- `status` + `assignedAt` DESC
-
-**Example Record:**
-```json
-{
-  "id": "qp_20260623_001",
-  "questId": "quest_daily_workout",
-  "title": "Daily Grind",
-  "status": "completed",
-  "progress": 1,
-  "target": 1,
-  "xpReward": 50,
-  "assignedAt": "2026-06-23T00:00:00Z",
-  "completedAt": "2026-06-23T07:45:00Z"
-}
-```
-
----
-
-## Firebase Storage Paths
+## Media Storage Paths
 
 | Path | Purpose | Access |
 |------|---------|--------|
-| `users/{uid}/avatar.jpg` | Profile avatar | Owner read/write |
-| `users/{uid}/workouts/{workoutId}/media/{file}` | Workout media (future) | Owner read/write |
+| `media/users/{user_id}/avatar.jpg` | Profile avatar | Owner upload; authenticated read |
+| `media/users/{user_id}/workouts/{workout_id}/` | Workout media (future) | Owner only |
 
 ---
 
 ## Level Calculation (Planned Business Logic)
 
-Documented here for schema context; implemented in `XPService`:
+Documented here for schema context; implemented in backend `XPService`:
 
 | Level | XP Required (cumulative) |
 |-------|--------------------------|
@@ -372,15 +335,27 @@ Documented here for schema context; implemented in `XPService`:
 
 | Task | Approach |
 |------|----------|
-| Exercise catalog | Seed script via Firebase Admin SDK or console import |
-| Quest templates | Seed script; daily assignment via client or Cloud Function |
-| Schema changes | Firestore is schemaless — document field additions; use `updatedAt` for tracking |
-| Local development | Firebase Emulator Suite (Auth, Firestore, Storage) |
+| Schema | Django migrations (`python manage.py makemigrations`) |
+| Exercise catalog | Django management command or fixture JSON |
+| Quest templates | Django fixture or admin seed |
+| Local development | PostgreSQL via Docker Compose |
+| Test database | Separate PostgreSQL DB or SQLite for unit tests |
+
+---
+
+## Transaction Patterns
+
+Workout completion must be **atomic** (Django `@transaction.atomic`):
+
+1. Update `workouts` status, `completed_at`, `xp_earned`
+2. Insert `xp_transactions` row
+3. Update `user_profiles.total_xp` and `level`
+4. Update `quest_progress.progress` where applicable
 
 ---
 
 ## Notes
 
-- **Not yet implemented in code** — update this document when Dart models and Firestore rules are added.
-- Denormalize frequently displayed fields (quest title, exercise name) to reduce reads.
-- Use Firestore batch writes when completing workouts + awarding XP atomically.
+- **Not yet implemented in code** — update when Django models and migrations exist.
+- Denormalize frequently displayed fields (quest title, exercise name) to reduce joins on hot paths.
+- All user-scoped queries must filter by `request.user` in DRF viewsets.

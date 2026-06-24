@@ -1,277 +1,394 @@
 # API Documentation
 
-> **Backend:** Firebase (BaaS) — no custom REST API for MVP  
+> **Backend:** Python + Django + Django REST Framework  
+> **Authentication:** JWT (access + refresh tokens)  
+> **Database:** PostgreSQL  
+> **AI:** OpenAI API (server-side proxy)  
 > **Last verified against source code:** 2026-06-23  
-> **Current state:** API surface designed; Firebase SDK integration not yet implemented.
+> **Source of truth:** Ascension System specification  
+> **Current state:** API surface designed; Django views and serializers not yet implemented.
 
 ---
 
 ## Overview
 
-AscendFit does **not** expose a traditional REST API for MVP. The Flutter app communicates directly with Firebase services via official SDKs, protected by Security Rules.
+AscendFit exposes a **RESTful JSON API** via Django REST Framework. The React Native mobile client communicates over HTTPS with JWT Bearer authentication.
 
-Future server-side logic (AI generation, scheduled quests) may be added via **Cloud Functions** (HTTP callable or triggers).
+All user-scoped endpoints require a valid access token. OpenAI API calls are **never made from the mobile client** — they are proxied through the Django `ai` app.
 
----
-
-## Internal APIs
-
-### Firebase Authentication
-
-| Operation | SDK Method | Auth Required | Description |
-|-----------|------------|---------------|-------------|
-| Register | `createUserWithEmailAndPassword(email, password)` | No | Create new account |
-| Login | `signInWithEmailAndPassword(email, password)` | No | Sign in existing user |
-| Logout | `signOut()` | Yes | End session |
-| Password reset | `sendPasswordResetEmail(email)` | No | Send reset email |
-| Auth state stream | `authStateChanges()` | — | Real-time session listener |
-| Current user | `currentUser` | — | Synchronous current user |
-
-**Error Responses (FirebaseAuthException):**
-
-| Code | Description | User Message |
-|------|-------------|--------------|
-| `email-already-in-use` | Email registered | "This email is already registered." |
-| `invalid-email` | Malformed email | "Please enter a valid email." |
-| `weak-password` | Password too short | "Password must be at least 6 characters." |
-| `user-not-found` | No account for email | "No account found with this email." |
-| `wrong-password` | Incorrect password | "Incorrect password." |
-| `too-many-requests` | Rate limited | "Too many attempts. Try again later." |
+**Base URL (planned):**
+- Development: `http://localhost:8000/api/`
+- Production: `https://api.ascendfit.com/api/`
 
 ---
 
-### Cloud Firestore
+## Authentication (JWT)
 
-#### User Profile
+Powered by `djangorestframework-simplejwt`.
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| Get profile | `users/{uid}` | `get()` | Yes (owner) | Load user profile |
-| Create profile | `users/{uid}` | `set()` | Yes (owner) | Create on registration |
-| Update profile | `users/{uid}` | `update()` | Yes (owner) | Update display name, preferences |
-| Stream profile | `users/{uid}` | `snapshots()` | Yes (owner) | Real-time profile updates |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| Register | POST | `/api/auth/register/` | No | Create user + profile |
+| Login | POST | `/api/auth/login/` | No | Issue access + refresh tokens |
+| Refresh | POST | `/api/auth/refresh/` | Refresh token | Issue new access token |
+| Logout | POST | `/api/auth/logout/` | Yes | Blacklist refresh token (optional) |
+| Password reset request | POST | `/api/auth/password-reset/` | No | Send reset email |
+| Password reset confirm | POST | `/api/auth/password-reset/confirm/` | No | Set new password |
 
-**Request (create profile):**
+### Register
+
+**Request:**
 ```json
 {
-  "uid": "abc123",
   "email": "user@example.com",
-  "displayName": "Alex",
-  "level": 1,
-  "totalXp": 0,
-  "currentStreak": 0,
-  "longestStreak": 0,
-  "preferences": { "units": "metric", "notificationsEnabled": true },
-  "createdAt": "<serverTimestamp>",
-  "updatedAt": "<serverTimestamp>"
+  "password": "securepass123",
+  "display_name": "Alex"
 }
 ```
 
-**Response:** Firestore document snapshot.
+**Response (201):**
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "display_name": "Alex"
+  },
+  "tokens": {
+    "access": "<jwt_access_token>",
+    "refresh": "<jwt_refresh_token>"
+  }
+}
+```
 
-**Errors:** Handled as `FirebaseException` with `permission-denied`, `not-found`, etc.
+### Login
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securepass123"
+}
+```
+
+**Response (200):**
+```json
+{
+  "access": "<jwt_access_token>",
+  "refresh": "<jwt_refresh_token>"
+}
+```
+
+### Token Usage
+
+Include on all authenticated requests:
+```
+Authorization: Bearer <access_token>
+```
+
+**Error Responses:**
+
+| Status | Code | Description | User Message |
+|--------|------|-------------|--------------|
+| 400 | `invalid_email` | Malformed email | "Please enter a valid email." |
+| 400 | `weak_password` | Password too short | "Password must be at least 8 characters." |
+| 401 | `invalid_credentials` | Wrong email/password | "Incorrect email or password." |
+| 401 | `token_expired` | Access token expired | Trigger refresh flow |
+| 409 | `email_exists` | Email already registered | "This email is already registered." |
+| 429 | `rate_limited` | Too many attempts | "Too many attempts. Try again later." |
 
 ---
 
-#### Workouts
+## User Profile
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| List workouts | `users/{uid}/workouts` | `query().orderBy('createdAt', desc)` | Yes (owner) | Paginated workout list |
-| Get workout | `users/{uid}/workouts/{id}` | `get()` | Yes (owner) | Single workout |
-| Create workout | `users/{uid}/workouts/{id}` | `set()` | Yes (owner) | New workout |
-| Update workout | `users/{uid}/workouts/{id}` | `update()` | Yes (owner) | Update in-progress session |
-| Delete workout | `users/{uid}/workouts/{id}` | `delete()` | Yes (owner) | Remove workout |
-| Stream active | `users/{uid}/workouts` | `where('status', isEqualTo: 'active').snapshots()` | Yes (owner) | Active session listener |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| Get profile | GET | `/api/profile/` | Yes | Current user profile |
+| Update profile | PATCH | `/api/profile/` | Yes | Update display name, preferences |
+| Upload avatar | POST | `/api/profile/avatar/` | Yes | Multipart image upload |
 
-**Request (create workout):**
+**Response (GET /api/profile/):**
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "display_name": "Alex Trainer",
+  "avatar_url": "http://localhost:8000/media/users/1/avatar.jpg",
+  "level": 5,
+  "total_xp": 1250,
+  "current_streak": 7,
+  "longest_streak": 14,
+  "preferences": {
+    "units": "metric",
+    "notifications_enabled": true
+  },
+  "created_at": "2026-06-01T08:00:00Z",
+  "updated_at": "2026-06-23T10:30:00Z"
+}
+```
+
+---
+
+## Workouts
+
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| List workouts | GET | `/api/workouts/` | Yes | Paginated list (`?status=`, `?page=`) |
+| Get workout | GET | `/api/workouts/{id}/` | Yes | Single workout with exercises |
+| Create workout | POST | `/api/workouts/` | Yes | New workout |
+| Update workout | PATCH | `/api/workouts/{id}/` | Yes | Update in-progress session |
+| Delete workout | DELETE | `/api/workouts/{id}/` | Yes | Remove workout |
+| Start workout | POST | `/api/workouts/{id}/start/` | Yes | Set status to `active` |
+| Complete workout | POST | `/api/workouts/{id}/complete/` | Yes | Finalize, award XP, update quests |
+
+**Request (POST /api/workouts/):**
 ```json
 {
   "title": "Push Day",
   "status": "planned",
-  "exercises": [],
-  "xpEarned": 0,
-  "createdAt": "<serverTimestamp>",
-  "updatedAt": "<serverTimestamp>"
+  "exercises": []
 }
 ```
 
-**Request (complete workout — via WorkoutService batch):**
+**Request (POST /api/workouts/{id}/complete/):**
 ```json
 {
+  "duration_seconds": 2700,
+  "exercises": [
+    {
+      "exercise_id": 1,
+      "name": "Bench Press",
+      "sets": [
+        { "reps": 10, "weight": 60, "completed": true },
+        { "reps": 8, "weight": 65, "completed": true }
+      ]
+    }
+  ]
+}
+```
+
+**Response (complete):**
+```json
+{
+  "id": 42,
   "status": "completed",
-  "completedAt": "<serverTimestamp>",
-  "durationSeconds": 2700,
-  "xpEarned": 75,
-  "updatedAt": "<serverTimestamp>"
+  "xp_earned": 75,
+  "level_up": false,
+  "new_level": 5,
+  "quest_updates": [
+    { "quest_progress_id": 7, "progress": 1, "target": 1, "status": "completed" }
+  ]
 }
 ```
 
 ---
 
-#### Exercise Catalog
+## Exercise Catalog
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| List exercises | `exercises` | `query().where('isActive', isEqualTo: true)` | Yes | Browse catalog |
-| Get exercise | `exercises/{id}` | `get()` | Yes | Single exercise |
-| Search by muscle | `exercises` | `where('muscleGroup', isEqualTo: group)` | Yes | Filtered list |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| List exercises | GET | `/api/exercises/` | Yes | Browse catalog (`?muscle_group=`, `?search=`) |
+| Get exercise | GET | `/api/exercises/{id}/` | Yes | Single exercise |
 
-**Response (exercise):**
+**Response:**
 ```json
 {
-  "id": "ex_bench_press",
+  "id": 1,
   "name": "Bench Press",
-  "muscleGroup": "chest",
+  "muscle_group": "chest",
   "equipment": "barbell",
   "difficulty": "intermediate",
-  "isActive": true
+  "instructions": "Lie flat on bench, lower bar to chest, press up.",
+  "is_active": true
 }
 ```
 
 ---
 
-#### XP Transactions
+## XP Transactions
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| List XP history | `users/{uid}/xp_transactions` | `orderBy('earnedAt', desc).limit(50)` | Yes (owner) | Recent XP events |
-| Add XP | `users/{uid}/xp_transactions/{id}` | `set()` + update `users/{uid}.totalXp` | Yes (owner) | Award XP (batch write) |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| List XP history | GET | `/api/xp/transactions/` | Yes | Recent XP events (`?limit=50`) |
 
-**Request (add XP — atomic batch):**
+**Response item:**
 ```json
 {
+  "id": 101,
   "amount": 75,
   "source": "workout",
-  "referenceId": "workout_001",
+  "reference_id": "42",
   "description": "Completed Push Day",
-  "earnedAt": "<serverTimestamp>"
+  "earned_at": "2026-06-23T07:45:00Z"
 }
+```
+
+> XP awards are created server-side on workout completion and quest claim — not via direct client POST.
+
+---
+
+## Quests
+
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| List active quests | GET | `/api/quests/` | Yes | User's active/completed quests |
+| Claim reward | POST | `/api/quests/{progress_id}/claim/` | Yes | Claim XP for completed quest |
+
+**Response (GET /api/quests/):**
+```json
+[
+  {
+    "id": 7,
+    "quest_id": 1,
+    "title": "Daily Grind",
+    "description": "Complete 1 workout today",
+    "status": "active",
+    "progress": 0,
+    "target": 1,
+    "xp_reward": 50,
+    "assigned_at": "2026-06-23T00:00:00Z"
+  }
+]
 ```
 
 ---
 
-#### Quests
+## AI Workout Generation (OpenAI API)
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| List templates | `quests` | `where('isActive', isEqualTo: true)` | Yes | Available quest types |
-| Get user quests | `users/{uid}/quest_progress` | `where('status', in: ['active','completed'])` | Yes (owner) | Today's quests |
-| Update progress | `users/{uid}/quest_progress/{id}` | `update({ progress })` | Yes (owner) | Increment progress |
-| Claim reward | `users/{uid}/quest_progress/{id}` | `update({ status: 'claimed' })` + XP batch | Yes (owner) | Claim XP reward |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| Generate workout | POST | `/api/ai/generate-workout/` | Yes | Request AI-generated plan |
+
+**Request:**
+```json
+{
+  "goal": "strength",
+  "duration_minutes": 45,
+  "equipment": ["barbell", "dumbbell"],
+  "muscle_groups": ["chest", "triceps"],
+  "difficulty": "intermediate"
+}
+```
+
+**Response:**
+```json
+{
+  "title": "AI Push Strength Session",
+  "estimated_duration_minutes": 45,
+  "exercises": [
+    {
+      "name": "Barbell Bench Press",
+      "muscle_group": "chest",
+      "sets": 4,
+      "reps": "8-10",
+      "rest_seconds": 90,
+      "notes": "Control the eccentric"
+    }
+  ],
+  "generated_by": "openai"
+}
+```
+
+**Server-side:** Django `OpenAIService` calls OpenAI API with structured prompt; API key stored in environment only.
 
 ---
 
-### Firebase Storage
+## Notifications
 
-| Operation | Path | Method | Auth | Description |
-|-----------|------|--------|------|-------------|
-| Upload avatar | `users/{uid}/avatar.jpg` | `putFile()` | Yes (owner) | Upload profile image |
-| Get avatar URL | `users/{uid}/avatar.jpg` | `getDownloadURL()` | Yes | Retrieve public URL |
-| Delete avatar | `users/{uid}/avatar.jpg` | `delete()` | Yes (owner) | Remove avatar |
+| Operation | Method | Endpoint | Auth | Description |
+|-----------|--------|----------|------|-------------|
+| Register device token | POST | `/api/notifications/register/` | Yes | Save FCM/APNs token to profile |
 
-**Upload constraints (planned):**
-- Max size: 5 MB
-- Allowed types: `image/jpeg`, `image/png`
-- Client-side compression before upload
-
----
-
-### Firebase Cloud Messaging
-
-| Operation | SDK Method | Auth | Description |
-|-----------|------------|------|-------------|
-| Request permission | `requestPermission()` | Yes | Ask notification permission (Android 13+) |
-| Get FCM token | `getToken()` | Yes | Device token for push |
-| Token refresh | `onTokenRefresh` | Yes | Update token in Firestore profile |
-| Foreground messages | `onMessage` | — | Handle in-app notifications |
-| Background tap | `onMessageOpenedApp` | — | Deep link to quest/workout screen |
-
-**Token storage:** Saved to `users/{uid}.fcmToken` in Firestore.
-
----
-
-## Cloud Functions (Planned — Post-MVP)
-
-| Function | Trigger | Purpose |
-|----------|---------|---------|
-| `generateDailyQuests` | Scheduled (daily) | Assign quests to active users |
-| `generateWorkout` | HTTPS Callable | Proxy AI API, return workout plan |
-| `validateXP` | Firestore trigger | Server-side XP integrity check |
-| `sendQuestReminder` | Scheduled | Push FCM for incomplete daily quests |
-
-> Document request/response schemas here when Cloud Functions are implemented.
+**Request:**
+```json
+{
+  "fcm_token": "<device_token>",
+  "platform": "android"
+}
+```
 
 ---
 
 ## External APIs
 
-| Provider | Purpose | Configuration | Rate Limits | Env Variables |
-|----------|---------|---------------|-------------|---------------|
-| **Firebase** | Auth, DB, Storage, FCM | `google-services.json` (Android), `GoogleService-Info.plist` (iOS) | Firebase plan quotas | Firebase config files (not in git) |
-| **Google AI / OpenAI** (planned) | AI workout generation | Cloud Function proxy | Provider-specific | `AI_API_KEY` in Cloud Functions secrets |
+| Provider | Purpose | Configuration | Env Variables |
+|----------|---------|---------------|---------------|
+| **OpenAI** | AI workout generation | Django `ai` app proxy | `OPENAI_API_KEY` |
+| **PostgreSQL** | Primary database | Django DATABASES setting | `DATABASE_URL` or `DB_*` vars |
+| **FCM/APNs** (planned) | Push notifications | Django notification service | `FCM_SERVER_KEY` |
 
 ---
 
 ## Environment & Configuration
 
-### Firebase Project Setup (Required)
+### Backend (Django)
 
-| File | Platform | Location | In Git? |
-|------|----------|----------|---------|
-| `google-services.json` | Android | `android/app/` | No (use CI secrets) |
-| `GoogleService-Info.plist` | iOS | `ios/Runner/` | No |
-| `firebase_options.dart` | Flutter | `lib/core/firebase/` | Generated by FlutterFire CLI |
+| Variable | Purpose | In Git? |
+|----------|---------|---------|
+| `SECRET_KEY` | Django secret | No |
+| `DATABASE_URL` | PostgreSQL connection | No |
+| `OPENAI_API_KEY` | OpenAI API access | No |
+| `ALLOWED_HOSTS` | Host whitelist | No (prod) |
+| `CORS_ALLOWED_ORIGINS` | Mobile dev origins | No |
 
-### FlutterFire CLI Setup (Planned)
+### Mobile (React Native)
 
-```bash
-# Install FlutterFire CLI
-dart pub global activate flutterfire_cli
+| Variable | Purpose | In Git? |
+|----------|---------|---------|
+| `API_BASE_URL` | DRF API base URL | No (use `.env`) |
 
-# Configure Firebase for Flutter
-flutterfire configure
-```
-
-### Firebase Emulator (Development)
+### Local Development (Planned)
 
 ```bash
-firebase emulators:start --only auth,firestore,storage
+# Start PostgreSQL
+docker compose up -d db
+
+# Run Django
+cd backend && python manage.py migrate && python manage.py runserver
+
+# Run React Native
+cd mobile && npm start
 ```
 
-| Emulator | Port (default) |
-|----------|----------------|
-| Auth | 9099 |
-| Firestore | 8080 |
-| Storage | 9199 |
+| Service | Port (default) |
+|---------|----------------|
+| Django API | 8000 |
+| PostgreSQL | 5432 |
+| Metro bundler | 8081 |
 
 ---
 
-## Security Rules Summary (Planned)
+## Permission Summary
 
 | Resource | Read | Write |
 |----------|------|-------|
-| `users/{uid}` | Owner only | Owner only |
-| `users/{uid}/workouts/{id}` | Owner only | Owner only |
-| `users/{uid}/xp_transactions/{id}` | Owner only | Owner only |
-| `users/{uid}/quest_progress/{id}` | Owner only | Owner only |
-| `exercises/{id}` | Authenticated users | Admin only |
-| `quests/{id}` | Authenticated users | Admin only |
-| Storage `users/{uid}/*` | Owner + read URL | Owner only |
+| Own profile | Authenticated owner | Authenticated owner |
+| Own workouts | Authenticated owner | Authenticated owner |
+| Own XP transactions | Authenticated owner | Server-only (via services) |
+| Own quest progress | Authenticated owner | Server-only (via services) |
+| Exercise catalog | Authenticated users | Admin only |
+| Quest templates | Authenticated users | Admin only |
+| AI generate | Authenticated users | N/A (POST only) |
+| Media uploads | Authenticated owner | Authenticated owner |
 
 ---
 
 ## Error Handling Convention (Planned)
 
-All repository methods return typed results:
+DRF returns standard error shapes:
 
-```dart
-// Pattern (planned)
-sealed class Result<T> {
-  const Result();
+```json
+{
+  "detail": "Authentication credentials were not provided."
 }
-class Success<T> extends Result<T> { final T data; }
-class Failure<T> extends Result<T> { final String message; final String? code; }
 ```
 
-Providers map `Failure` to user-facing error strings and loading states.
+Field validation errors:
+```json
+{
+  "email": ["Enter a valid email address."],
+  "password": ["This field is required."]
+}
+```
+
+Mobile services map HTTP status codes to user-facing messages in hooks.

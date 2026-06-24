@@ -1,111 +1,177 @@
 # Next Tasks
 
 > **Last updated:** 2026-06-23  
-> **Stack:** Flutter + Firebase + Provider  
+> **Source of truth:** Ascension System specification  
+> **Stack:** React Native + TypeScript · Django + DRF · PostgreSQL · JWT · OpenAI API  
 > Tasks ordered by priority (highest first).
 
 ---
 
 ## Immediate Tasks (P0)
 
-### 1. Initialize Git repository
+### 1. Initialize Git repository (if not done)
 
 ```bash
 cd d:\AscendFit
 git init
 git add .
-git commit -m "docs: establish Flutter Firebase stack and governance documentation"
+git commit -m "docs: migrate stack to Ascension System (RN, Django, PostgreSQL, JWT, OpenAI)"
 ```
 
-### 2. Scaffold Flutter project
+### 2. Scaffold Django backend
 
 ```bash
-flutter create --org com.ascendfit --project-name ascendfit .
+mkdir backend && cd backend
+python -m venv venv
+# activate venv (Windows: venv\Scripts\activate)
+pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary django-cors-headers openai pillow
+django-admin startproject ascendfit .
+python manage.py startapp accounts
+python manage.py startapp workouts
+python manage.py startapp exercises
+python manage.py startapp gamification
+python manage.py startapp ai
 ```
 
-Then create feature-first folder structure per `ARCHITECTURE.md`:
+Configure per `ARCHITECTURE.md`:
+- DRF + JWT in settings
+- PostgreSQL in `DATABASES`
+- CORS for mobile dev
+- App URLs under `/api/`
 
+### 3. Provision PostgreSQL
+
+Create `docker-compose.yml` at project root:
+
+```yaml
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ascendfit
+      POSTGRES_USER: ascendfit
+      POSTGRES_PASSWORD: ascendfit
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
 ```
-lib/
-├── main.dart
-├── app.dart
-├── core/{constants,theme,routing,firebase,utils}/
-├── shared/{widgets,models,providers}/
-└── features/{auth,profile,workouts,exercises,xp,quests,notifications}/
-```
-
-Add dependencies to `pubspec.yaml`:
-- `firebase_core`, `firebase_auth`, `cloud_firestore`, `firebase_storage`, `firebase_messaging`
-- `provider`
-- `go_router`
-
-### 3. Create Firebase project
-
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create project: **AscendFit**
-3. Enable: Authentication (Email/Password), Firestore, Storage, Cloud Messaging
-4. Register Android app with package name `com.ascendfit.ascendfit`
-5. Download `google-services.json` → `android/app/`
-6. Run `flutterfire configure` to generate `firebase_options.dart`
-
-### 4. Deploy Firestore security rules
-
-Create `firestore.rules` per `API_DOCUMENTATION.md` security summary.
-Create `firestore.indexes.json` per `DATABASE_SCHEMA.md` index requirements.
 
 ```bash
-firebase init firestore
-firebase deploy --only firestore:rules,firestore:indexes
+docker compose up -d db
 ```
 
-### 5. Seed exercise catalog
+### 4. Scaffold React Native mobile app
 
-Create seed script or Firebase console import for initial `exercises/` collection.
+```bash
+npx @react-native-community/cli init AscendFitMobile --directory mobile --template react-native-template-typescript
+```
+
+Create feature-first folder structure per `ARCHITECTURE.md`:
+
+```
+mobile/src/
+├── App.tsx
+├── core/{api,auth,navigation,theme,utils}/
+├── shared/{components,hooks,types}/
+└── features/{auth,profile,workouts,exercises,xp,quests,notifications,ai}/
+```
+
+Add dependencies:
+- `@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs`
+- `@react-native-async-storage/async-storage`
+- `axios`
+
+### 5. Create `.env.example`
+
+```env
+# Backend
+SECRET_KEY=
+DATABASE_URL=postgres://ascendfit:ascendfit@localhost:5432/ascendfit
+OPENAI_API_KEY=
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:8081
+
+# Mobile
+API_BASE_URL=http://10.0.2.2:8000/api/
+```
+
+### 6. Implement Django models and migrations
+
+Create models per `DATABASE_SCHEMA.md`:
+- `accounts`: UserProfile
+- `workouts`: Workout, WorkoutExercise
+- `exercises`: Exercise
+- `gamification`: XPTransaction, QuestTemplate, QuestProgress
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 7. Seed exercise catalog
+
+Create Django management command for initial `exercises` table data (50–100 common exercises).
 
 ---
 
 ## Short-Term Tasks (P1 — Sprint 1)
 
-### 6. Implement authentication vertical slice
+### 8. Implement JWT authentication vertical slice
 
-- [ ] `AuthRepository` + `AuthService` + `AuthProvider`
+**Backend:**
+- [ ] Register, login, refresh endpoints
+- [ ] UserProfile creation on register
+- [ ] DRF permission classes
+
+**Mobile:**
+- [ ] `AuthContext`, `AuthService`, API client with JWT interceptors
 - [ ] Login, Register, Forgot Password screens
-- [ ] Create Firestore profile on registration
-- [ ] go_router auth redirect guards
+- [ ] React Navigation auth stack / main tabs switch
 - [ ] Update `UI_SCREENS.md` with actual file paths
 
-### 7. Build app shell
+### 9. Build app shell
 
-- [ ] Material 3 theme (`core/theme/`)
-- [ ] Bottom navigation with ShellRoute
-- [ ] Splash screen with auth state check
+- [ ] Theme in `core/theme/`
+- [ ] Bottom tab navigator (Home, Workouts, Quests, Profile)
+- [ ] Splash screen with JWT validation
 - [ ] Home dashboard placeholder
 
-### 8. Implement user profile feature
+### 10. Implement user profile feature
 
-- [ ] `UserRepository`, `ProfileService`, `ProfileProvider`
+- [ ] Profile serializer, viewset, avatar upload endpoint
+- [ ] `useProfile` hook, ProfileService
 - [ ] Profile screen with level, XP, streak
-- [ ] Edit profile + avatar upload to Firebase Storage
+- [ ] Edit profile + avatar upload
 
-### 9. Implement workout CRUD
+### 11. Implement workout CRUD
 
-- [ ] `WorkoutRepository`, `WorkoutService`, `WorkoutProvider`
+- [ ] Workout serializers, viewsets, services
+- [ ] `useWorkouts` hook, WorkoutService
 - [ ] Workout list, detail, create flows
-- [ ] Firestore subcollection reads/writes
 
-### 10. Implement active workout + XP
+### 12. Implement active workout + XP
 
-- [ ] Active workout session screen with timer
-- [ ] Workout completion batch write (workout + XP transaction)
-- [ ] `XPService` level calculation
+- [ ] Complete workout endpoint (atomic transaction)
+- [ ] XPService level calculation
+- [ ] Active workout screen with timer
 - [ ] Workout summary screen with XP animation
 
-### 11. Implement daily quests
+### 13. Implement daily quests
 
 - [ ] Quest template seed data
-- [ ] Daily quest assignment logic
+- [ ] Daily quest assignment logic (management command or service)
 - [ ] Quest progress tracking on workout completion
-- [ ] Claim reward flow
+- [ ] Claim reward endpoint and flow
+
+### 14. Implement AI workout generator
+
+- [ ] `OpenAIService` in `ai` app
+- [ ] `POST /api/ai/generate-workout/` endpoint
+- [ ] Mobile AI workout screen
+- [ ] Save generated workout as planned workout
 
 ---
 
@@ -113,14 +179,13 @@ Create seed script or Firebase console import for initial `exercises/` collectio
 
 | Phase | Sprint | Focus | Deliverable |
 |-------|--------|-------|-------------|
-| **0 — Foundation** | Current | Docs, stack, scaffold | Documented, runnable empty app |
-| **1 — Auth & Shell** | 1 | Login, routing, theme | Users can register and log in |
+| **0 — Foundation** | Current | Docs, stack, scaffold | Documented, runnable API + empty mobile app |
+| **1 — Auth & Shell** | 1 | JWT login, routing, theme | Users can register and log in |
 | **2 — Core Fitness** | 2 | Workouts, exercises | Users can log training |
-| **3 — Gamification** | 3 | XP, quests, streaks | Engagement loop active |
-| **4 — Notifications** | 4 | FCM integration | Push quest reminders |
+| **3 — Gamification + AI** | 3 | XP, quests, OpenAI workouts | Engagement loop + AI generation |
+| **4 — Notifications** | 4 | Push integration | Quest reminders |
 | **5 — Polish & Release** | 5 | UX, testing, Play Store | Android MVP release |
-| **6 — Intelligence** | 6+ | AI workouts, Cloud Functions | Personalized programming |
-| **7 — iOS** | 7+ | iOS build and release | Cross-platform availability |
+| **6 — iOS** | 6+ | iOS build and release | Cross-platform availability |
 
 ---
 
@@ -128,11 +193,12 @@ Create seed script or Firebase console import for initial `exercises/` collectio
 
 | ID | Topic | Recommendation |
 |----|-------|----------------|
-| ADR-012 | Routing library | go_router |
-| ADR-013 | MVP feature scope | Auth + Workouts + XP + Quests in v1.0 |
-| ADR-014 | AI provider | Gemini via Cloud Functions (post-MVP) |
+| ADR-012 | Navigation library | React Navigation |
+| ADR-013 | MVP feature scope | Auth + Workouts + XP + Quests + AI in v1.0 |
 | ADR-015 | Exercise catalog | Seed 50–100 common exercises |
 | ADR-016 | XP formula | Linear early levels, exponential after L10 |
+| ADR-018 | Mobile bootstrap | Bare React Native CLI with TypeScript |
+| ADR-019 | Object storage | S3-compatible for production media |
 
 ---
 

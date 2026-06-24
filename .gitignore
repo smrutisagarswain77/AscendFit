@@ -1,0 +1,42 @@
+# Environment
+.env
+backend/.env
+mobile/.env
+
+# Python
+backend/venv/
+backend/.venv/
+**/__pycache__/
+**/*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Django
+backend/media/*
+!backend/media/.gitkeep
+backend/staticfiles/
+backend/*.sqlite3
+
+# Node / React Native
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/android/app/build/
+mobile/android/.gradle/
+mobile/ios/build/
+mobile/ios/Pods/
+*.jks
+
+# PostgreSQL (local volume data if bind-mounted)
+pgdata/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

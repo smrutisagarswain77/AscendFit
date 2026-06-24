@@ -1,7 +1,8 @@
 # Features
 
 > **Last verified against source code:** 2026-06-23  
-> **Stack:** Flutter + Firebase + Provider
+> **Source of truth:** Ascension System specification  
+> **Stack:** React Native + TypeScript · Django + DRF · PostgreSQL · JWT · OpenAI API
 
 ---
 
@@ -10,8 +11,9 @@
 | Feature | Description | Status | Dependencies |
 |---------|-------------|--------|--------------|
 | Project documentation system | Full `/docs` governance with 11 files | Complete | None |
-| Tech stack selection | Flutter, Firebase, Provider, feature-first architecture | Complete | Documented in `DECISIONS.md` |
-| Firestore schema design | Collections, fields, security rules plan | Designed | Not deployed |
+| Tech stack selection | React Native, Django, DRF, PostgreSQL, JWT, OpenAI | Complete | Documented in `DECISIONS.md` |
+| PostgreSQL schema design | Tables, fields, relationships | Designed | Not migrated |
+| REST API surface design | DRF endpoints, JWT auth, OpenAI proxy | Designed | Not coded |
 | UI screen catalog | Routes and navigation flow defined | Designed | Not coded |
 
 ---
@@ -20,9 +22,9 @@
 
 | Feature | Description | Completion % |
 |---------|-------------|--------------|
-| MVP scope definition | Confirm v1.0 feature set | 20% |
-| Firebase project setup | Create and link Firebase project | 0% |
-| Flutter project scaffolding | Initialize app with feature-first structure | 0% |
+| MVP scope definition | Confirm v1.0 feature set per Ascension System | 20% |
+| Backend project setup | Django + DRF + PostgreSQL | 0% |
+| Mobile project scaffolding | React Native + TypeScript feature-first structure | 0% |
 
 ---
 
@@ -33,40 +35,42 @@
 | Feature | Description | Priority |
 |---------|-------------|----------|
 | Git initialization | Version control with conventional commits | **P0** |
-| Flutter project scaffold | `flutter create`, folder structure, pubspec | **P0** |
-| Firebase integration | FlutterFire CLI, Auth, Firestore, Storage, FCM | **P0** |
-| Firestore security rules | User-scoped read/write rules | **P0** |
-| App theme & routing shell | Material 3 theme, go_router, bottom nav | **P0** |
+| Django project scaffold | `django-admin startproject`, apps, requirements.txt | **P0** |
+| PostgreSQL setup | Docker Compose + Django DATABASES config | **P0** |
+| React Native project scaffold | TypeScript template, folder structure | **P0** |
+| JWT authentication setup | djangorestframework-simplejwt + mobile token storage | **P0** |
+| App theme & navigation shell | React Navigation, tab navigator | **P0** |
 
 ### P1 — MVP Core
 
 | Feature | Description | Priority |
 |---------|-------------|----------|
-| Authentication | Email/password register, login, logout, reset | **P1** |
-| User profiles | Firestore profile create/load, avatar upload | **P1** |
+| Authentication | Register, login, logout, password reset (JWT) | **P1** |
+| User profiles | Profile CRUD, avatar upload via DRF | **P1** |
 | Workout CRUD | Create, list, view, edit, delete workouts | **P1** |
 | Active workout session | In-session logging, timer, finish flow | **P1** |
-| Exercise catalog | Global Firestore exercise library + search | **P1** |
+| Exercise catalog | PostgreSQL exercise library + search API | **P1** |
 | XP system | XP on workout completion, level display | **P1** |
 | Daily quests | Assign, track, claim daily quests | **P1** |
+| AI workout generator | OpenAI API via Django backend proxy | **P1** |
 
 ### P2 — Engagement
 
 | Feature | Description | Priority |
 |---------|-------------|----------|
-| Push notifications | FCM quest reminders, streak nudges | **P2** |
+| Push notifications | Backend-triggered quest reminders | **P2** |
 | Streak tracking | Consecutive workout day counter | **P2** |
 | Progress analytics | Charts, personal records, history | **P2** |
 | Workout summary screen | Post-session recap with XP animation | **P2** |
 
-### P3 — Intelligence & Growth
+### P3 — Growth
 
 | Feature | Description | Priority |
 |---------|-------------|----------|
-| AI workout generator | Cloud Function + LLM integration | **P3** |
 | iOS build & release | Scale from Android-first to iOS | **P3** |
 | Social features | Leaderboards, sharing | **P4** |
-| Cloud Functions | Scheduled quests, server-side XP validation | **P3** |
+| Celery scheduled tasks | Daily quest assignment, notification jobs | **P3** |
+| Admin dashboard | Django admin enhancements | **P3** |
 
 ---
 
@@ -74,34 +78,37 @@
 
 ```mermaid
 graph TD
-    Docs[Documentation] --> Scaffold[Flutter Scaffold]
-    Scaffold --> Firebase[Firebase Setup]
-    Firebase --> Rules[Security Rules]
-    Firebase --> Auth[Authentication]
+    Docs[Documentation] --> Backend[Django Scaffold]
+    Docs --> Mobile[RN Scaffold]
+    Backend --> DB[PostgreSQL Setup]
+    Backend --> JWT[JWT Auth]
+    Mobile --> JWT
+    JWT --> Auth[Authentication]
     Auth --> Profile[User Profiles]
     Profile --> Workouts[Workout CRUD]
     Workouts --> Active[Active Workout Session]
     Active --> XP[XP System]
     XP --> Quests[Daily Quests]
-    Quests --> FCM[Push Notifications]
+    Quests --> Push[Push Notifications]
     Workouts --> Exercises[Exercise Catalog]
-    Workouts --> Analytics[Progress Analytics]
     Workouts --> AI[AI Workout Generator]
+    Workouts --> Analytics[Progress Analytics]
 ```
 
 ---
 
 ## Feature ↔ Module Mapping
 
-| Feature | Flutter Module | Firebase Services |
-|---------|----------------|-------------------|
-| Authentication | `features/auth/` | Firebase Auth |
-| User profiles | `features/profile/` | Firestore, Storage |
-| Workouts | `features/workouts/` | Firestore |
-| Exercise catalog | `features/exercises/` | Firestore |
-| XP system | `features/xp/` | Firestore |
-| Daily quests | `features/quests/` | Firestore |
-| Notifications | `features/notifications/` | FCM, Firestore |
+| Feature | Mobile Module | Backend App | Services |
+|---------|---------------|-------------|----------|
+| Authentication | `features/auth/` | `accounts` | JWT, DRF auth views |
+| User profiles | `features/profile/` | `accounts` | PostgreSQL, media storage |
+| Workouts | `features/workouts/` | `workouts` | PostgreSQL |
+| Exercise catalog | `features/exercises/` | `exercises` | PostgreSQL |
+| XP system | `features/xp/` | `gamification` | PostgreSQL |
+| Daily quests | `features/quests/` | `gamification` | PostgreSQL |
+| AI workouts | `features/ai/` | `ai` | OpenAI API |
+| Notifications | `features/notifications/` | `accounts` | FCM/APNs (planned) |
 
 ---
 
@@ -109,3 +116,4 @@ graph TD
 
 - Update status columns when features move between Implemented, In Progress, and Planned.
 - Cross-reference `UI_SCREENS.md` for screen-level detail and `DATABASE_SCHEMA.md` for data models.
+- AI workout generation is **in MVP scope** — proxied via Django, not client-side OpenAI calls.

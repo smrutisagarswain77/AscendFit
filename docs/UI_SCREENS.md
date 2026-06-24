@@ -1,10 +1,12 @@
 # UI Screens
 
-> **Platform:** Flutter (Android first)  
-> **Routing:** go_router (planned)  
-> **State:** Provider  
+> **Platform:** React Native + TypeScript (Android first)  
+> **Navigation:** React Navigation (planned)  
+> **State:** React Context + custom hooks  
+> **API:** Django REST Framework + JWT  
 > **Last verified against source code:** 2026-06-23  
-> **Current state:** Screen catalog defined; no Flutter screens implemented yet.
+> **Source of truth:** Ascension System specification  
+> **Current state:** Screen catalog defined; no React Native screens implemented yet.
 
 ---
 
@@ -12,23 +14,23 @@
 
 | Screen | Route | Feature Module | Status |
 |--------|-------|----------------|--------|
-| Splash | `/` | core | Planned |
-| Onboarding | `/onboarding` | auth | Planned |
-| Login | `/login` | auth | Planned |
-| Register | `/register` | auth | Planned |
-| Forgot Password | `/forgot-password` | auth | Planned |
-| Home / Dashboard | `/home` | profile | Planned |
-| Workout List | `/workouts` | workouts | Planned |
-| Workout Detail | `/workouts/:id` | workouts | Planned |
-| Active Workout | `/workouts/:id/active` | workouts | Planned |
-| Workout Summary | `/workouts/:id/summary` | workouts | Planned |
-| Exercise Catalog | `/exercises` | exercises | Planned |
-| Quests | `/quests` | quests | Planned |
-| Profile | `/profile` | profile | Planned |
-| Edit Profile | `/profile/edit` | profile | Planned |
-| XP History | `/profile/xp` | xp | Planned |
-| Settings | `/settings` | profile | Planned |
-| AI Workout Generator | `/ai/workout` | workouts | Planned (post-MVP) |
+| Splash | `Splash` | core | Planned |
+| Onboarding | `Onboarding` | auth | Planned |
+| Login | `Login` | auth | Planned |
+| Register | `Register` | auth | Planned |
+| Forgot Password | `ForgotPassword` | auth | Planned |
+| Home / Dashboard | `Home` | profile | Planned |
+| Workout List | `WorkoutList` | workouts | Planned |
+| Workout Detail | `WorkoutDetail` | workouts | Planned |
+| Active Workout | `ActiveWorkout` | workouts | Planned |
+| Workout Summary | `WorkoutSummary` | workouts | Planned |
+| Exercise Catalog | `ExerciseCatalog` | exercises | Planned |
+| Quests | `Quests` | quests | Planned |
+| Profile | `Profile` | profile | Planned |
+| Edit Profile | `EditProfile` | profile | Planned |
+| XP History | `XPHistory` | xp | Planned |
+| Settings | `Settings` | profile | Planned |
+| AI Workout Generator | `AIWorkout` | ai | Planned |
 
 ---
 
@@ -38,13 +40,13 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Initialize Firebase, check auth state, route accordingly |
-| **Route** | `/` |
-| **File (planned)** | `lib/core/routing/` or dedicated splash in `lib/features/auth/presentation/screens/splash_screen.dart` |
+| **Purpose** | Check stored JWT, validate/refresh token, route accordingly |
+| **Route** | `Splash` (initial route) |
+| **File (planned)** | `mobile/src/core/navigation/SplashScreen.tsx` |
 | **Components** | App logo, loading indicator |
-| **Providers** | `AuthProvider` |
+| **Hooks / Context** | `AuthContext` |
 | **User actions** | None (auto-navigate) |
-| **Navigation** | → Onboarding (first launch), Login (logged out), Home (logged in) |
+| **Navigation** | → Onboarding (first launch), Login (no token), Home (valid token) |
 
 ---
 
@@ -53,10 +55,10 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Introduce app value; collect fitness goals |
-| **Route** | `/onboarding` |
-| **File (planned)** | `lib/features/auth/presentation/screens/onboarding_screen.dart` |
-| **Components** | PageView carousel, goal selection chips, CTA button |
-| **Providers** | Local state / `SharedPreferences` for completion flag |
+| **Route** | `Onboarding` |
+| **File (planned)** | `mobile/src/features/auth/screens/OnboardingScreen.tsx` |
+| **Components** | FlatList/ScrollView carousel, goal selection chips, CTA button |
+| **Hooks / Context** | Local state; AsyncStorage for completion flag |
 | **User actions** | Skip, Continue, Select goals |
 | **Navigation** | → Register, Home |
 
@@ -66,13 +68,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Authenticate existing users |
-| **Route** | `/login` |
-| **File (planned)** | `lib/features/auth/presentation/screens/login_screen.dart` |
+| **Purpose** | Authenticate via JWT login endpoint |
+| **Route** | `Login` |
+| **File (planned)** | `mobile/src/features/auth/screens/LoginScreen.tsx` |
 | **Components** | Email field, password field, login button, register link |
-| **Providers** | `AuthProvider` |
+| **Hooks / Context** | `AuthContext`, `useAuth` |
 | **User actions** | Sign in, Go to register, Forgot password |
-| **Navigation** | → Home, Register, Forgot Password |
+| **Navigation** | → Home, Register, ForgotPassword |
+| **API** | `POST /api/auth/login/` |
 
 ---
 
@@ -80,13 +83,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Create new Firebase Auth account + Firestore profile |
-| **Route** | `/register` |
-| **File (planned)** | `lib/features/auth/presentation/screens/register_screen.dart` |
+| **Purpose** | Create account via DRF register endpoint |
+| **Route** | `Register` |
+| **File (planned)** | `mobile/src/features/auth/screens/RegisterScreen.tsx` |
 | **Components** | Name, email, password, confirm password, register button |
-| **Providers** | `AuthProvider`, `ProfileProvider` |
+| **Hooks / Context** | `AuthContext` |
 | **User actions** | Create account |
 | **Navigation** | → Home, Login |
+| **API** | `POST /api/auth/register/` |
 
 ---
 
@@ -94,13 +98,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Trigger Firebase password reset email |
-| **Route** | `/forgot-password` |
-| **File (planned)** | `lib/features/auth/presentation/screens/forgot_password_screen.dart` |
+| **Purpose** | Trigger password reset email via DRF |
+| **Route** | `ForgotPassword` |
+| **File (planned)** | `mobile/src/features/auth/screens/ForgotPasswordScreen.tsx` |
 | **Components** | Email field, submit button, back link |
-| **Providers** | `AuthProvider` |
+| **Hooks / Context** | `useAuth` |
 | **User actions** | Send reset email |
 | **Navigation** | → Login |
+| **API** | `POST /api/auth/password-reset/` |
 
 ---
 
@@ -109,12 +114,12 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Central hub — XP, streak, daily quests, quick actions |
-| **Route** | `/home` |
-| **File (planned)** | `lib/features/profile/presentation/screens/home_screen.dart` |
+| **Route** | `Home` (tab) |
+| **File (planned)** | `mobile/src/features/profile/screens/HomeScreen.tsx` |
 | **Components** | XP bar, level badge, streak counter, quest cards, FAB (start workout) |
-| **Providers** | `ProfileProvider`, `QuestProvider`, `WorkoutProvider` |
+| **Hooks / Context** | `useProfile`, `useQuests`, `useWorkouts` |
 | **User actions** | Start workout, View quests, Open profile |
-| **Navigation** | → Workouts, Quests, Profile, Active Workout |
+| **Navigation** | → WorkoutList, Quests, Profile, ActiveWorkout |
 
 ---
 
@@ -123,12 +128,12 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Browse planned, active, and completed workouts |
-| **Route** | `/workouts` |
-| **File (planned)** | `lib/features/workouts/presentation/screens/workout_list_screen.dart` |
-| **Components** | TabBar (planned/active/completed), workout cards, FAB |
-| **Providers** | `WorkoutProvider` |
+| **Route** | `WorkoutList` (tab) |
+| **File (planned)** | `mobile/src/features/workouts/screens/WorkoutListScreen.tsx` |
+| **Components** | Tab filter (planned/active/completed), workout cards, FAB |
+| **Hooks / Context** | `useWorkouts` |
 | **User actions** | Open workout, Create workout, Delete |
-| **Navigation** | → Workout Detail, Active Workout |
+| **Navigation** | → WorkoutDetail, ActiveWorkout |
 
 ---
 
@@ -137,12 +142,12 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | View/edit workout plan before or after session |
-| **Route** | `/workouts/:id` |
-| **File (planned)** | `lib/features/workouts/presentation/screens/workout_detail_screen.dart` |
+| **Route** | `WorkoutDetail` |
+| **File (planned)** | `mobile/src/features/workouts/screens/WorkoutDetailScreen.tsx` |
 | **Components** | Exercise list, set editor, start/finish buttons |
-| **Providers** | `WorkoutProvider`, `ExerciseProvider` |
+| **Hooks / Context** | `useWorkouts`, `useExercises` |
 | **User actions** | Add exercise, Edit sets, Start, Delete |
-| **Navigation** | → Active Workout, Workout List |
+| **Navigation** | → ActiveWorkout, WorkoutList |
 
 ---
 
@@ -151,12 +156,13 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | In-session logging with timer |
-| **Route** | `/workouts/:id/active` |
-| **File (planned)** | `lib/features/workouts/presentation/screens/active_workout_screen.dart` |
+| **Route** | `ActiveWorkout` |
+| **File (planned)** | `mobile/src/features/workouts/screens/ActiveWorkoutScreen.tsx` |
 | **Components** | Timer, exercise stepper, set checkboxes, rest timer, finish CTA |
-| **Providers** | `WorkoutProvider`, `XPProvider` |
+| **Hooks / Context** | `useWorkouts`, `useXP` |
 | **User actions** | Log set, Skip exercise, Finish workout |
-| **Navigation** | → Workout Summary |
+| **Navigation** | → WorkoutSummary |
+| **API** | `POST /api/workouts/{id}/complete/` |
 
 ---
 
@@ -165,10 +171,10 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Post-workout recap with XP earned |
-| **Route** | `/workouts/:id/summary` |
-| **File (planned)** | `lib/features/workouts/presentation/screens/workout_summary_screen.dart` |
+| **Route** | `WorkoutSummary` |
+| **File (planned)** | `mobile/src/features/workouts/screens/WorkoutSummaryScreen.tsx` |
 | **Components** | Stats summary, XP animation, quest progress update |
-| **Providers** | `WorkoutProvider`, `XPProvider`, `QuestProvider` |
+| **Hooks / Context** | `useWorkouts`, `useXP`, `useQuests` |
 | **User actions** | Done, Share (future) |
 | **Navigation** | → Home |
 
@@ -179,12 +185,13 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | View and complete daily/weekly quests |
-| **Route** | `/quests` |
-| **File (planned)** | `lib/features/quests/presentation/screens/quests_screen.dart` |
+| **Route** | `Quests` (tab) |
+| **File (planned)** | `mobile/src/features/quests/screens/QuestsScreen.tsx` |
 | **Components** | Quest cards, progress bars, claim button |
-| **Providers** | `QuestProvider`, `XPProvider` |
+| **Hooks / Context** | `useQuests`, `useXP` |
 | **User actions** | Claim reward, View details |
 | **Navigation** | → Home, relevant feature screens |
+| **API** | `POST /api/quests/{id}/claim/` |
 
 ---
 
@@ -193,12 +200,12 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | User stats, level, avatar, settings entry |
-| **Route** | `/profile` |
-| **File (planned)** | `lib/features/profile/presentation/screens/profile_screen.dart` |
+| **Route** | `Profile` (tab) |
+| **File (planned)** | `mobile/src/features/profile/screens/ProfileScreen.tsx` |
 | **Components** | Avatar, level/XP display, streak stats, menu tiles |
-| **Providers** | `ProfileProvider`, `AuthProvider`, `XPProvider` |
+| **Hooks / Context** | `useProfile`, `AuthContext`, `useXP` |
 | **User actions** | Edit profile, View XP history, Settings, Logout |
-| **Navigation** | → Edit Profile, XP History, Settings, Login |
+| **Navigation** | → EditProfile, XPHistory, Settings, Login |
 
 ---
 
@@ -207,12 +214,13 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Update display name and avatar |
-| **Route** | `/profile/edit` |
-| **File (planned)** | `lib/features/profile/presentation/screens/edit_profile_screen.dart` |
+| **Route** | `EditProfile` |
+| **File (planned)** | `mobile/src/features/profile/screens/EditProfileScreen.tsx` |
 | **Components** | Avatar picker, name field, save button |
-| **Providers** | `ProfileProvider` |
+| **Hooks / Context** | `useProfile` |
 | **User actions** | Change avatar, Save profile |
 | **Navigation** | → Profile |
+| **API** | `PATCH /api/profile/`, `POST /api/profile/avatar/` |
 
 ---
 
@@ -221,12 +229,27 @@
 | Attribute | Value |
 |-----------|-------|
 | **Purpose** | Timeline of XP transactions |
-| **Route** | `/profile/xp` |
-| **File (planned)** | `lib/features/xp/presentation/screens/xp_history_screen.dart` |
-| **Components** | XP transaction list, source icons, date headers |
-| **Providers** | `XPProvider` |
+| **Route** | `XPHistory` |
+| **File (planned)** | `mobile/src/features/xp/screens/XPHistoryScreen.tsx` |
+| **Components** | FlatList of transactions, source icons, date headers |
+| **Hooks / Context** | `useXP` |
 | **User actions** | Scroll history |
 | **Navigation** | → Profile |
+
+---
+
+### AI Workout Generator
+
+| Attribute | Value |
+|-----------|-------|
+| **Purpose** | Generate personalized workout via OpenAI API (backend proxy) |
+| **Route** | `AIWorkout` |
+| **File (planned)** | `mobile/src/features/ai/screens/AIWorkoutScreen.tsx` |
+| **Components** | Goal/duration/equipment form, generate button, result preview |
+| **Hooks / Context** | `useAIWorkout` |
+| **User actions** | Configure preferences, Generate, Save as workout |
+| **Navigation** | → WorkoutDetail |
+| **API** | `POST /api/ai/generate-workout/` |
 
 ---
 
@@ -234,59 +257,59 @@
 
 ```mermaid
 flowchart TD
-    Splash["/"] --> AuthCheck{Authenticated?}
-    AuthCheck -->|No| Login["/login"]
-    AuthCheck -->|Yes| Home["/home"]
-    Login <-->|toggle| Register["/register"]
-    Login --> Forgot["/forgot-password"]
+    Splash["Splash"] --> AuthCheck{Valid JWT?}
+    AuthCheck -->|No| Login["Login"]
+    AuthCheck -->|Yes| Home["Home"]
+    Login <-->|toggle| Register["Register"]
+    Login --> Forgot["ForgotPassword"]
 
-    Home --> Workouts["/workouts"]
-    Home --> Quests["/quests"]
-    Home --> Profile["/profile"]
+    Home --> Workouts["WorkoutList"]
+    Home --> Quests["Quests"]
+    Home --> Profile["Profile"]
 
-    Workouts --> Detail["/workouts/:id"]
-    Detail --> Active["/workouts/:id/active"]
-    Active --> Summary["/workouts/:id/summary"]
+    Workouts --> Detail["WorkoutDetail"]
+    Detail --> Active["ActiveWorkout"]
+    Active --> Summary["WorkoutSummary"]
     Summary --> Home
 
-    Profile --> Edit["/profile/edit"]
-    Profile --> XPHist["/profile/xp"]
+    Profile --> Edit["EditProfile"]
+    Profile --> XPHist["XPHistory"]
     Profile -->|logout| Login
 ```
 
 ---
 
-## Auth Route Guards (Planned)
+## Auth Navigation Guards (Planned)
 
-```dart
-// go_router redirect logic (planned)
-// Unauthenticated → /login
-// Authenticated on /login or /register → /home
-// First launch → /onboarding
+```typescript
+// React Navigation auth flow (planned)
+// AuthStack: Login, Register, ForgotPassword, Onboarding
+// MainTabs: Home, WorkoutList, Quests, Profile
+// Root navigator switches based on AuthContext.isAuthenticated
 ```
 
 ---
 
-## Shared Widgets (Planned)
+## Shared Components (Planned)
 
-| Widget | Location | Used On |
-|--------|----------|---------|
-| `XpBar` | `lib/shared/widgets/xp_bar.dart` | Home, Profile |
-| `LevelBadge` | `lib/shared/widgets/level_badge.dart` | Home, Profile, Summary |
-| `QuestCard` | `lib/features/quests/presentation/widgets/quest_card.dart` | Home, Quests |
-| `WorkoutCard` | `lib/features/workouts/presentation/widgets/workout_card.dart` | Workout List |
-| `LoadingOverlay` | `lib/shared/widgets/loading_overlay.dart` | All async screens |
-| `ErrorBanner` | `lib/shared/widgets/error_banner.dart` | All screens |
+| Component | Location | Used On |
+|-----------|----------|---------|
+| `XpBar` | `mobile/src/shared/components/XpBar.tsx` | Home, Profile |
+| `LevelBadge` | `mobile/src/shared/components/LevelBadge.tsx` | Home, Profile, Summary |
+| `QuestCard` | `mobile/src/features/quests/components/QuestCard.tsx` | Home, Quests |
+| `WorkoutCard` | `mobile/src/features/workouts/components/WorkoutCard.tsx` | WorkoutList |
+| `LoadingOverlay` | `mobile/src/shared/components/LoadingOverlay.tsx` | All async screens |
+| `ErrorBanner` | `mobile/src/shared/components/ErrorBanner.tsx` | All screens |
 
 ---
 
-## Bottom Navigation (Planned)
+## Bottom Tab Navigation (Planned)
 
-| Tab | Icon | Route |
-|-----|------|-------|
-| Home | home | `/home` |
-| Workouts | fitness_center | `/workouts` |
-| Quests | emoji_events | `/quests` |
-| Profile | person | `/profile` |
+| Tab | Icon | Screen |
+|-----|------|--------|
+| Home | home | `Home` |
+| Workouts | fitness-center | `WorkoutList` |
+| Quests | emoji-events | `Quests` |
+| Profile | person | `Profile` |
 
-Implemented via `ShellRoute` in go_router wrapping authenticated screens.
+Implemented via `@react-navigation/bottom-tabs` inside authenticated `MainTabs` navigator.
