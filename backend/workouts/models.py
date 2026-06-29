@@ -56,19 +56,23 @@ class WorkoutExercise(models.Model):
         on_delete=models.CASCADE,
         related_name="workout_exercises",
     )
+
     exercise = models.ForeignKey(
         "exercises.Exercise",
         on_delete=models.PROTECT,
         related_name="workout_entries",
     )
+
     sets = models.PositiveIntegerField(
         default=1,
         help_text="Number of sets performed.",
     )
+
     reps = models.PositiveIntegerField(
         default=10,
         help_text="Repetitions per set.",
     )
+
     weight = models.DecimalField(
         max_digits=6,
         decimal_places=2,
@@ -76,10 +80,29 @@ class WorkoutExercise(models.Model):
         help_text="Weight used per set (user's preferred unit).",
     )
 
+    rest_seconds = models.PositiveIntegerField(
+        default=60,
+        help_text="Rest time between sets in seconds.",
+    )
+
+    order = models.PositiveIntegerField(
+        default=1,
+        help_text="Position of the exercise within the workout.",
+    )
+
     class Meta:
-        ordering = ["id"]
+        ordering = ["order"]
         verbose_name = "Workout exercise"
         verbose_name_plural = "Workout exercises"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["workout", "order"],
+                name="unique_workout_exercise_order",
+            )
+        ]
 
     def __str__(self):
-        return f"{self.exercise.name} — {self.sets}x{self.reps} @ {self.weight}"
+        return (
+            f"{self.exercise.name} — "
+            f"{self.sets}x{self.reps} @ {self.weight}"
+        )

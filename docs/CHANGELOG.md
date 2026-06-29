@@ -4,6 +4,34 @@ All meaningful project changes are recorded here.
 
 ---
 
+## 2026-06-29
+
+Type
+feat
+
+Description
+
+Completed the backend MVP foundation.
+
+Added
+
+• JWT Authentication
+• User Registration
+• Profile API
+• Workout CRUD
+• Exercise CRUD
+• WorkoutExercise CRUD
+• Docker PostgreSQL integration
+• Django Admin configuration
+• Protected user querysets
+• JWT authorization
+• Postman API testing
+
+Current Status
+
+Backend MVP approximately 40% complete.
+Beginning Gamification module.
+
 ## 2026-06-23 (Update 3)
 
 **Type:** docs

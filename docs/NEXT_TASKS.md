@@ -9,113 +9,70 @@
 
 ## Immediate Tasks (P0)
 
-### 1. Initialize Git repository (if not done)
+Priority 1 (Current)
 
-```bash
-cd d:\AscendFit
-git init
-git add .
-git commit -m "docs: migrate stack to Ascension System (RN, Django, PostgreSQL, JWT, OpenAI)"
-```
+1.
+Finish WorkoutExercise testing
 
-### 2. Scaffold Django backend
+2.
+Create Gamification Models
 
-```bash
-mkdir backend && cd backend
-python -m venv venv
-# activate venv (Windows: venv\Scripts\activate)
-pip install django djangorestframework djangorestframework-simplejwt psycopg2-binary django-cors-headers openai pillow
-django-admin startproject ascendfit .
-python manage.py startapp accounts
-python manage.py startapp workouts
-python manage.py startapp exercises
-python manage.py startapp gamification
-python manage.py startapp ai
-```
+XPTransaction
 
-Configure per `ARCHITECTURE.md`:
-- DRF + JWT in settings
-- PostgreSQL in `DATABASES`
-- CORS for mobile dev
-- App URLs under `/api/`
+Quest
 
-### 3. Provision PostgreSQL
+QuestProgress
 
-Create `docker-compose.yml` at project root:
+DailyQuest
 
-```yaml
-services:
-  db:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: ascendfit
-      POSTGRES_USER: ascendfit
-      POSTGRES_PASSWORD: ascendfit
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-volumes:
-  pgdata:
-```
+3.
+Gamification CRUD
 
-```bash
-docker compose up -d db
-```
+4.
+Workout Completion Endpoint
 
-### 4. Scaffold React Native mobile app
+When workout completes
 
-```bash
-npx @react-native-community/cli init AscendFitMobile --directory mobile --template react-native-template-typescript
-```
+Give XP
 
-Create feature-first folder structure per `ARCHITECTURE.md`:
+Update streak
 
-```
-mobile/src/
-├── App.tsx
-├── core/{api,auth,navigation,theme,utils}/
-├── shared/{components,hooks,types}/
-└── features/{auth,profile,workouts,exercises,xp,quests,notifications,ai}/
-```
+Update quests
 
-Add dependencies:
-- `@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs`
-- `@react-native-async-storage/async-storage`
-- `axios`
+5.
+XP Calculation Service
 
-### 5. Create `.env.example`
+6.
+Level Calculation Service
 
-```env
-# Backend
-SECRET_KEY=
-DATABASE_URL=postgres://ascendfit:ascendfit@localhost:5432/ascendfit
-OPENAI_API_KEY=
-ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:8081
+7.
+Quest Reward System
 
-# Mobile
-API_BASE_URL=http://10.0.2.2:8000/api/
-```
+After Backend
 
-### 6. Implement Django models and migrations
+React Native App
 
-Create models per `DATABASE_SCHEMA.md`:
-- `accounts`: UserProfile
-- `workouts`: Workout, WorkoutExercise
-- `exercises`: Exercise
-- `gamification`: XPTransaction, QuestTemplate, QuestProgress
+Authentication
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
+Workout Screens
 
-### 7. Seed exercise catalog
+Exercise Screens
 
-Create Django management command for initial `exercises` table data (50–100 common exercises).
+Dashboard
 
----
+Profile
+
+Gamification UI
+
+Leaderboard (Optional)
+
+AI Workout Generator
+
+Notification System
+
+Final Testing
+
+Deployment
 
 ## Short-Term Tasks (P1 — Sprint 1)
 
