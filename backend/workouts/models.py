@@ -15,6 +15,21 @@ class Workout(models.Model):
     )
     title = models.CharField(max_length=200)
     notes = models.TextField(blank=True)
+
+    muscle_group = models.CharField(
+        max_length=50,
+        choices=[
+            ("Chest", "Chest"),
+            ("Back", "Back"),
+            ("Legs", "Legs"),
+            ("Shoulders", "Shoulders"),
+            ("Arms", "Arms"),
+            ("Core", "Core"),
+            ("Full Body", "Full Body"),
+        ],
+        default="Full Body",
+    )
+
     duration_minutes = models.PositiveIntegerField(
         null=True,
         blank=True,

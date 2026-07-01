@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'exercises',
     'gamification',
     'ai',
+    "dashboard",
 ]
 
 MIDDLEWARE = [

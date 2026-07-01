@@ -25,4 +25,6 @@ urlpatterns = [
     path("api/exercises/", include("exercises.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("api/gamification/", include("gamification.urls")),
+    path("api/ai/", include("ai.urls")),
+    path("api/dashboard/", include("dashboard.urls")),
 ]
