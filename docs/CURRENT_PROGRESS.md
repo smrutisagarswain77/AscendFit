@@ -48,16 +48,36 @@ Testing
 -------
 ✅ Register
 ✅ Login
+✅ Refresh Token
+✅ Profile API
 ✅ Workout CRUD
 ✅ Exercise CRUD
+✅ WorkoutExercise CRUD
+✅ User Isolation
+✅ JWT Authentication
+✅ End-to-end Postman testing completed
 
-In Progress
+Current Status
+--------------
+Backend core modules fully implemented and verified.
 
-WorkoutExercise testing
+Completed Modules
+-----------------
+✅ Authentication
+✅ Exercises
+✅ Workouts
+✅ WorkoutExercise
 
 Next
+----
+🚧 Gamification Models
+- XPTransaction
+- Quest
+- QuestProgress
+- DailyQuest
 
-Gamification Models
-XP Transactions
-Quest System
-Level System
+Followed by:
+- Gamification CRUD APIs
+- XP Service
+- Level System
+- Workout Completion Rewards

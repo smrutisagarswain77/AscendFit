@@ -3,6 +3,35 @@
 All meaningful project changes are recorded here.
 
 ---
+## 2026-06-30
+
+**Type:** test
+
+**Description:**
+
+Completed full backend API verification using Postman.
+
+Verified:
+
+- JWT Authentication
+- Register API
+- Login API
+- Refresh Token API
+- Profile API
+- Exercise CRUD
+- Workout CRUD
+- WorkoutExercise CRUD
+- User ownership protection
+- Foreign key relationships
+
+**Result:**
+
+Backend core APIs are fully tested and stable.
+
+**Next Milestone:**
+
+Begin Gamification module implementation (XP, Levels, Quests).
+
 
 ## 2026-06-29
 

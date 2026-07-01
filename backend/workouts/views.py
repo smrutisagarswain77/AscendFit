@@ -1,6 +1,12 @@
+
+
 from rest_framework import generics, permissions
 from .models import Workout, WorkoutExercise
 from .serializers import WorkoutSerializer, WorkoutExerciseSerializer
+
+
+
+from .services import complete_workout
 
 
 
@@ -23,6 +29,15 @@ class WorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Workout.objects.filter(user=self.request.user)
 
+    def perform_update(self, serializer):
+        previous = self.get_object()
+
+        was_completed = previous.completed
+
+        workout = serializer.save()
+
+        if not was_completed and workout.completed:
+            complete_workout(workout)
 
 class WorkoutExerciseListCreateView(generics.ListCreateAPIView):
     serializer_class = WorkoutExerciseSerializer
