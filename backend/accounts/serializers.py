@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-
+from gamification.models import QuestTemplate, QuestProgress
 from .models import UserProfile
 
 
@@ -17,6 +17,23 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             password=validated_data["password"],
         )
+
+        # Create user profile
+        UserProfile.objects.create(user=user)
+
+        # Initialize quest progress for all existing quest templates
+        quests = QuestTemplate.objects.all()
+
+        for quest in quests:
+            QuestProgress.objects.create(
+                user=user,
+                quest=quest,
+                progress=0,
+                completed=False,
+                claimed=False,
+            )
+
+        return user
 
         UserProfile.objects.create(user=user)
 

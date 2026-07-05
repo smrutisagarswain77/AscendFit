@@ -1,5 +1,8 @@
+import logging
 from workouts.models import Workout
 from exercises.models import Exercise
+
+logger = logging.getLogger(__name__)
 
 def get_workout_recommendation(user):
     """
@@ -95,6 +98,11 @@ def get_workout_recommendation(user):
 
     recovery_tip = (
         f"Since today's focus is {focus}, allow at least 48 hours before training this muscle group again."
+    )
+
+    logger.info(
+        "Generated AI recommendation for user %s",
+        user.username,
     )
     
     return {

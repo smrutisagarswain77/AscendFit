@@ -1,13 +1,18 @@
-from django.utils import timezone
 
+import logging
+from django.utils import timezone
+from django.db import transaction
 from accounts.models import UserProfile
 from gamification.models import XPTransaction, QuestProgress
+
+logger = logging.getLogger(__name__)
 
 
 XP_PER_LEVEL = 100
 WORKOUT_XP = 100
 
 
+@transaction.atomic
 def complete_workout(workout):
     """
     Handle all business logic when a workout is completed.
@@ -83,3 +88,9 @@ def complete_workout(workout):
             quest_progress.completed_at = timezone.now()
 
         quest_progress.save()
+
+    logger.info(
+        "Workout %s completed successfully for user %s",
+        workout.id,
+        workout.user.username,
+    )

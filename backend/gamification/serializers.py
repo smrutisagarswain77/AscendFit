@@ -9,6 +9,13 @@ class XPTransactionSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["user", "created_at"]
 
+    def validate_amount(self, value):
+        if value == 0:
+            raise serializers.ValidationError(
+                "XP amount cannot be zero."
+            )
+        return value
+
 
 class QuestTemplateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,3 +42,10 @@ class QuestProgressSerializer(serializers.ModelSerializer):
                 )
 
         return attrs
+
+    def validate_target_value(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Target value must be greater than 0."
+            )
+        return value
