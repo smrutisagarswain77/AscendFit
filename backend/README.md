@@ -1,68 +1,141 @@
 # 🚀 AscendFit Backend
 
-AscendFit is a fitness tracking and gamification backend built with Django REST Framework and PostgreSQL. It provides authentication, workout tracking, AI-powered workout recommendations, gamification (XP, levels, quests, streaks), and analytics through a REST API.
+A production-ready fitness tracking backend built with **Django REST Framework** and **PostgreSQL**.
+
+AscendFit provides secure authentication, workout management, AI-powered workout recommendations, gamification (XP, levels, quests, streaks), and user analytics through a RESTful API. The project follows a modular architecture with separated business logic, making it scalable and maintainable.
+
+---
+
+# 📌 Project Status
+
+## ✅ Backend Complete
+
+The backend has been fully implemented and end-to-end tested.
+
+### Completed Modules
+
+* ✅ Authentication & JWT Security
+* ✅ User Profile
+* ✅ Workout Management
+* ✅ Exercise Catalog
+* ✅ AI Workout Recommendation
+* ✅ Gamification System
+* ✅ Dashboard & Analytics
+* ✅ Logging
+* ✅ Transactions
+* ✅ Validation
+* ✅ Security & User Isolation
 
 ---
 
 # ✨ Features
 
 ## 👤 Authentication
-- User Registration
-- JWT Authentication
-- User Profile
-- Secure API Access
+
+* User Registration
+* JWT Authentication
+* User Profile
+* Secure Protected APIs
+
+---
 
 ## 🏋️ Workout Management
-- Create Workouts
-- Update Workouts
-- Delete Workouts
-- Workout Exercises
-- Workout Completion
+
+* Create Workouts
+* Update Workouts
+* Delete Workouts
+* Workout Exercises
+* Workout Completion Tracking
+
+---
 
 ## 💪 Exercise Catalog
-- Global Exercise Database
-- Muscle Groups
-- Difficulty Levels
-- Equipment Information
+
+* Global Exercise Database
+* Muscle Groups
+* Difficulty Levels
+* Equipment Information
+* Exercise Descriptions
+
+---
 
 ## 🎮 Gamification
-- XP System
-- Level Progression
-- Daily Streak
-- Quest Templates
-- Quest Progress
-- Reward Claim
-- XP Transaction History
+
+* XP System
+* Level Progression
+* Daily Streak
+* Quest Templates
+* Quest Progress
+* Reward Claim
+* XP Transaction History
+
+---
 
 ## 🤖 AI Recommendation Engine
-- Personalized Workout Recommendation
-- Muscle Rotation Logic
-- Exercise Recommendation
-- Recovery Suggestions
-- Motivational Coaching Messages
+
+* Personalized Workout Recommendations
+* Muscle Rotation Logic
+* Exercise Recommendations
+* Recovery Suggestions
+* Motivational Coaching Messages
+
+---
 
 ## 📊 Dashboard & Analytics
-- Dashboard Summary
-- Weekly Analytics
-- Monthly Analytics
-- Progress History
+
+* Dashboard Summary
+* Weekly Analytics
+* Monthly Analytics
+* XP Progress History
+
+---
+
+# 📊 Project Statistics
+
+* **6 Django Apps**
+* **20+ REST API Endpoints**
+* **JWT Authentication**
+* **PostgreSQL Database**
+* **AI Recommendation Engine**
+* **Gamification System**
+* **Analytics Dashboard**
+* **Service Layer Architecture**
+* **Transaction-safe Business Logic**
+* **End-to-End Tested with Postman**
 
 ---
 
 # 🛠 Tech Stack
 
-- Python 3.14
-- Django 6
-- Django REST Framework
-- PostgreSQL
-- JWT Authentication
-- CORS Headers
+## Backend
+
+* Python
+* Django
+* Django REST Framework
+* PostgreSQL
+
+## Authentication
+
+* Simple JWT
+
+## Environment
+
+* python-dotenv
+
+## API
+
+* REST APIs
+* JSON
+
+## Other
+
+* django-cors-headers
 
 ---
 
 # 📁 Project Structure
 
-```
+```text
 backend/
 │
 ├── accounts/
@@ -72,228 +145,287 @@ backend/
 ├── ai/
 ├── dashboard/
 ├── ascendfit/
+│
 ├── manage.py
+├── requirements.txt
+├── .env.example
 └── README.md
 ```
 
 ---
 
+# 🏗 Backend Architecture
+
+```text
+                Client
+                   │
+                   ▼
+            Django REST API
+                   │
+                   ▼
+                Views
+                   │
+                   ▼
+              Service Layer
+                   │
+                   ▼
+                Models
+                   │
+                   ▼
+             PostgreSQL Database
+```
+
+Business logic is intentionally separated into service modules to keep views lightweight and maintainable.
+
+---
+
 # ⚙ Installation
 
-## Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone <repository-url>
 cd backend
 ```
 
-## Create Virtual Environment
+---
 
-```bash
-python -m venv venv
-```
+## 2. Create Virtual Environment
 
 Windows
 
 ```bash
+python -m venv venv
 venv\Scripts\activate
 ```
 
-Linux / Mac
+Linux / macOS
 
 ```bash
+python3 -m venv venv
 source venv/bin/activate
 ```
 
-## Install Dependencies
+---
+
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configure PostgreSQL
+---
 
-Create a PostgreSQL database.
+## 4. Configure Environment Variables
 
-Update `settings.py`:
+Copy the example environment file.
 
-```python
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ascendfit",
-        "USER": "...",
-        "PASSWORD": "...",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
-    }
-}
+Windows
+
+```bash
+copy .env.example .env
 ```
 
-Run migrations:
+Linux / macOS
+
+```bash
+cp .env.example .env
+```
+
+Update the values inside `.env` according to your PostgreSQL configuration.
+
+---
+
+## 5. Run Database Migrations
 
 ```bash
 python manage.py migrate
 ```
 
-Create superuser:
+---
+
+## 6. Create Superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Start server:
+---
+
+## 7. Start Development Server
 
 ```bash
 python manage.py runserver
+```
+
+Server:
+
+```text
+http://127.0.0.1:8000/
 ```
 
 ---
 
 # 🔐 Authentication
 
-AscendFit uses JWT Authentication.
+AscendFit uses **JWT Authentication**.
 
-Obtain token:
+Obtain Access Token
 
-```
+```http
 POST /api/token/
 ```
 
-Refresh token:
+Refresh Token
 
-```
+```http
 POST /api/token/refresh/
 ```
 
-Include token:
+Include the token with every protected request.
 
-```
+```text
 Authorization: Bearer <access_token>
 ```
 
 ---
 
-# 📚 API Endpoints
+# 📚 API Modules
 
-## Accounts
+## 👤 Accounts
 
-| Method | Endpoint |
-|---------|----------|
-| POST | /api/accounts/register/ |
-| GET | /api/accounts/profile/ |
+| Method | Endpoint            |
+| ------ | ------------------- |
+| POST   | /api/auth/register/ |
+| GET    | /api/auth/profile/  |
 
 ---
 
-## Workouts
+## 🏋 Workouts
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/workouts/ |
-| POST | /api/workouts/ |
-| GET | /api/workouts/{id}/ |
-| PATCH | /api/workouts/{id}/ |
+| Method | Endpoint            |
+| ------ | ------------------- |
+| GET    | /api/workouts/      |
+| POST   | /api/workouts/      |
+| GET    | /api/workouts/{id}/ |
+| PATCH  | /api/workouts/{id}/ |
 | DELETE | /api/workouts/{id}/ |
 
 ---
 
-## Workout Exercises
+## 💪 Exercises
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/workout-exercises/ |
-| POST | /api/workout-exercises/ |
-| PATCH | /api/workout-exercises/{id}/ |
-| DELETE | /api/workout-exercises/{id}/ |
-
----
-
-## Exercises
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/exercises/ |
-| POST | /api/exercises/ |
-| PATCH | /api/exercises/{id}/ |
+| Method | Endpoint             |
+| ------ | -------------------- |
+| GET    | /api/exercises/      |
+| POST   | /api/exercises/      |
+| PATCH  | /api/exercises/{id}/ |
 | DELETE | /api/exercises/{id}/ |
 
 ---
 
-## Gamification
+## 🎮 Gamification
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/gamification/xp-transactions/ |
-| GET | /api/gamification/quests/ |
-| GET | /api/gamification/progress/ |
-| POST | /api/gamification/progress/{id}/claim/ |
-
----
-
-## AI
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/ai/recommend/ |
+| Method | Endpoint                               |
+| ------ | -------------------------------------- |
+| GET    | /api/gamification/xp-transactions/     |
+| GET    | /api/gamification/quests/              |
+| GET    | /api/gamification/progress/            |
+| POST   | /api/gamification/progress/{id}/claim/ |
 
 ---
 
-## Dashboard
+## 🤖 AI
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/dashboard/ |
-| GET | /api/dashboard/weekly/ |
-| GET | /api/dashboard/monthly/ |
-| GET | /api/dashboard/history/ |
+| Method | Endpoint           |
+| ------ | ------------------ |
+| GET    | /api/ai/recommend/ |
 
 ---
 
-# 🧠 Backend Architecture
+## 📊 Dashboard
 
-```
-Client
-      ↓
-REST API
-      ↓
-Views
-      ↓
-Services
-      ↓
-Models
-      ↓
-PostgreSQL
-```
-
-Business logic is separated into service classes to keep views lightweight and maintainable.
+| Method | Endpoint                 |
+| ------ | ------------------------ |
+| GET    | /api/dashboard/          |
+| GET    | /api/dashboard/weekly/   |
+| GET    | /api/dashboard/monthly/  |
+| GET    | /api/dashboard/progress/ |
 
 ---
 
 # 🔒 Security
 
-- JWT Authentication
-- User-level Query Filtering
-- Request Validation
-- Database Transactions
-- Logging
-- Permission Classes
-- Serializer Validation
+* JWT Authentication
+* User-level Data Isolation
+* Permission Classes
+* Serializer Validation
+* Database Transactions
+* Logging
+* Environment Variables
+* Protected API Endpoints
 
 ---
 
-# 📈 Future Improvements
+# 🧪 Testing
 
-- React Native Mobile Application
-- AI Model Integration (OpenAI/Gemini)
-- Push Notifications
-- Social Features
-- Leaderboards
-- Wearable Device Integration
-- Docker Deployment
-- CI/CD Pipeline
+The backend has been tested end-to-end using Postman.
+
+### Verified Modules
+
+* User Registration
+* Login
+* Profile
+* Workout CRUD
+* Exercise CRUD
+* Workout Completion
+* XP & Level System
+* Daily Streak
+* Quest Progress
+* Quest Reward Claim
+* AI Recommendation
+* Dashboard Analytics
+* Progress History
+* Validation
+* Security & Authorization
+
+---
+
+# 🚀 Roadmap
+
+## ✅ Completed
+
+* Django REST Backend
+* Authentication
+* Workout Management
+* Exercise Catalog
+* AI Recommendation Engine
+* Gamification System
+* Dashboard Analytics
+
+## 🚧 Currently In Development
+
+* React Native Mobile Application
+
+## 🔮 Future Improvements
+
+* Gemini/OpenAI Integration
+* Push Notifications
+* Leaderboards
+* Social Features
+* Wearable Device Integration
+* Docker Deployment
+* CI/CD Pipeline
+* Automated Testing
+
+---
+
+# 📄 License
+
+This project was developed for educational purposes and internship portfolio demonstration.
 
 ---
 
 # 👨‍💻 Author
 
-Developed as an internship project to demonstrate backend development skills using Django REST Framework, PostgreSQL, REST APIs, gamification, analytics, and AI-assisted recommendation systems.
+Developed as a full-stack fitness application backend to demonstrate backend engineering skills using Django REST Framework, PostgreSQL, REST APIs, authentication, AI-assisted recommendation systems, analytics, and gamification.
