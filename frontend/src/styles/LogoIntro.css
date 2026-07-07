@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap');
+
+.game-intro-universe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #020508;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+/* Cinematic Full Screen Exposure Flash */
+.garena-flash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 10;
+  pointer-events: none;
+  animation: flashBloom 0.7s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+}
+
+/* Bulletproof hardware accelerated studio presentation timeline */
+.cinematic-entrance-assembly {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: studioTimeline 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.vector-logo-aspect-lock {
+  width: 100%;
+  max-width: 180px;
+  aspect-ratio: 160 / 120;
+  display: flex;
+  justify-content: center;
+}
+
+.triple-a-emblem {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.6));
+}
+
+.cinema-brand-wrap {
+  margin-top: 18px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.cinematic-title {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 2.2rem;
+  letter-spacing: 0.65rem;
+  text-indent: 0.65rem;
+  margin: 0;
+}
+
+.cinematic-title .cyan-power {
+  color: #00d2ff;
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+}
+
+.cinematic-ticker {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.55rem;
+  text-indent: 0.55rem;
+  color: #52667a;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* TIMELINE KEYFRAMES: Drops in, Shakes, then smoothly Fades Out perfectly */
+@keyframes flashBloom {
+  0% { opacity: 1; }
+  15% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes studioTimeline {
+  /* 0s - 0.4s: Pop in with high brightness */
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translate(0, 0);
+    filter: brightness(3);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+    filter: brightness(1.2);
+  }
+  /* 0.4s - 2.0s: Gaming subtle camera shake loop while visible */
+  20% { transform: scale(1) translate(-1px, 1px); }
+  30% { transform: scale(1.01) translate(1px, -1px); }
+  40% { transform: scale(1.01) translate(-1px, -1px); }
+  50% { transform: scale(1.02) translate(1px, 1px); }
+  60% { transform: scale(1.02) translate(-1px, 1px); }
+  70% { transform: scale(1.03) translate(1px, -1px); }
+  80% { transform: scale(1.03) translate(0, 0); filter: brightness(1); opacity: 1; }
+  /* 2.0s - 2.5s: Smooth cinematic fade up and out into the void */
+  100% {
+    opacity: 0;
+    transform: scale(1.08) translate(0, -10px);
+    filter: brightness(0) blur(4px);
+  }
+}

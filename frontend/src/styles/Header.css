@@ -1,0 +1,503 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+/* ================= SYSTEM ANCHOR LAYOUT NODE ================= */
+.hd-system-node {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.12);
+  padding: 16px 30px;
+  background: rgba(2, 5, 8, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 90;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Linear Scanning Glint Sweeper Beam across the entire header */
+.hd-system-node .hd-header-laser-beam {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.05), transparent);
+  transform: skewX(-30deg);
+  pointer-events: none;
+  animation: hdBeamMove 7s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes hdBeamMove {
+  0% { left: -120%; }
+  100% { left: 220%; }
+}
+
+.hd-branding-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hd-protocol-lbl {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.12rem;
+  color: #ffffff;
+}
+
+.hd-sub-status {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.hd-pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #00d2ff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00d2ff;
+  animation: hdPulseGlow 1.2s infinite alternate;
+}
+
+@keyframes hdPulseGlow {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 14px #00d2ff; }
+}
+
+.hd-pulse-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: #5c7890;
+  margin-left: 6px;
+}
+
+/* Right-side alignment clusters */
+.hd-controls-cluster {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ================= CRAZY ADVANCED CHRONOGRAPH TIMER ENGINE ================= */
+.hd-chronograph-wrapper {
+  position: relative;
+  text-align: right;
+  font-family: 'Share Tech Mono', monospace;
+  background: rgba(3, 8, 15, 0.7);
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: crosshair;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.hd-timer-matrix-grid-back {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image: radial-gradient(rgba(2, 5, 8, 1) 1px, transparent 1px);
+  background-size: 4px 4px;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hd-time-digits-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.hd-time-digits {
+  font-size: 1.5rem;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.hd-ms-digits {
+  font-size: 0.95rem;
+  color: rgba(0, 210, 255, 0.5);
+  width: 34px;
+  margin-left: 4px;
+  text-align: left;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.hd-lbl {
+  font-size: 0.6rem;
+  color: #5c7890;
+  display: block;
+  letter-spacing: 0.06rem;
+  text-align: right;
+  margin-bottom: 2px;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+/* Holographic local laser wave hidden inside the timer wrapper box */
+.hd-timer-laser-scanner {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 210, 255, 0.4);
+  box-shadow: 0 0 8px #00d2ff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* --- THE ADVANCED TIMER HOVER SUPERSTATE --- */
+.hd-chronograph-wrapper:hover {
+  background: rgba(0, 210, 255, 0.05);
+  border-color: #00d2ff;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.25), inset 0 0 15px rgba(0, 210, 255, 0.1);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.hd-chronograph-wrapper:hover .hd-timer-matrix-grid-back {
+  opacity: 0.35;
+}
+
+.hd-chronograph-wrapper:hover .hd-time-digits {
+  color: #00d2ff;
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
+  transform: scale(0.98);
+}
+
+.hd-chronograph-wrapper:hover .hd-ms-digits {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 10px #00d2ff;
+}
+
+.hd-chronograph-wrapper:hover .hd-lbl {
+  color: #ffffff;
+}
+
+.hd-chronograph-wrapper:hover .hd-timer-laser-scanner {
+  animation: hdLocalScan 1.5s linear infinite;
+  opacity: 1;
+}
+
+@keyframes hdLocalScan {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* ================= HOVER GLOW SHELL SYSTEM: BUTTON NOTIFICATIONS ================= */
+.hd-interactive-panel-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hd-icon-trigger-btn {
+  background: rgba(6, 15, 24, 0.6);
+  border: 1px solid rgba(0, 210, 255, 0.18);
+  color: #6c869c;
+  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.hd-icon-layer {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.hd-alert-badge-ping {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 6px;
+  height: 6px;
+  background: #ff3344;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff3344;
+  z-index: 4;
+}
+
+/* Energy core hidden under trigger icons */
+.hd-btn-glow-shell {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.2) 0%, transparent 75%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1;
+}
+
+/* Interaction triggering animation */
+.hd-icon-trigger-btn:hover, 
+.hd-icon-trigger-btn.hd-panel-active {
+  color: #00d2ff;
+  border-color: #00d2ff;
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+  transform: scale(1.06);
+}
+
+.hd-icon-trigger-btn:hover .hd-icon-layer {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.hd-icon-trigger-btn:hover .hd-btn-glow-shell,
+.hd-icon-trigger-btn.hd-panel-active .hd-btn-glow-shell {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* ================= BIOMETRIC PROFILE ROW PROTECTION SHIELD ================= */
+.hd-profile-trigger-btn {
+  background: rgba(6, 15, 24, 0.55);
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px 6px 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  white-space: nowrap; 
+}
+
+.hd-avatar-frame {
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 210, 255, 0.04);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  color: #00d2ff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0; 
+}
+
+.hd-avatar-meta-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left; 
+  position: relative;
+  z-index: 2;
+}
+
+.hd-user-callsign {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: block;
+  letter-spacing: 0.05rem;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.hd-user-sub-node {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: #5c7890;
+  display: block;
+  line-height: 1.2;
+}
+
+.hd-profile-glow-shell {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 210, 255, 0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+/* Profile Activation and Multi-Layer Hover Physics */
+.hd-profile-trigger-btn:hover,
+.hd-profile-trigger-btn.hd-panel-active {
+  border-color: #00d2ff;
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.2);
+  transform: scale(1.03);
+}
+
+.hd-profile-trigger-btn:hover .hd-avatar-frame,
+.hd-profile-trigger-btn.hd-panel-active .hd-avatar-frame {
+  background: #00d2ff;
+  color: #020508;
+  box-shadow: 0 0 12px #00d2ff;
+  transform: scale(1.05);
+}
+
+.hd-profile-trigger-btn:hover .hd-user-callsign {
+  color: #00d2ff;
+}
+
+.hd-profile-trigger-btn:hover .hd-profile-glow-shell,
+.hd-profile-trigger-btn.hd-panel-active .hd-profile-glow-shell {
+  opacity: 1;
+}
+
+/* ================= DATA DROPDOWN SHARD MODALS ================= */
+.hd-dropdown-glass-panel {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  width: 280px;
+  background: rgba(4, 10, 18, 0.96);
+  border: 1px solid #00d2ff;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85), inset 0 0 15px rgba(0, 210, 255, 0.05);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 16px;
+  z-index: 500;
+  box-sizing: border-box;
+}
+
+.hd-dropdown-glass-panel.hd-angle-br { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+.hd-dropdown-glass-panel.hd-angle-bl { clip-path: polygon(0 0, 100% 0, 100% 100%, 15px 100%, 0 calc(100% - 15px)); }
+
+.hd-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6c869c;
+  letter-spacing: 0.06rem;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.15);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.hd-panel-scroller {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.hd-panel-item-row {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid rgba(0, 210, 255, 0.2);
+  padding: 8px 10px;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.hd-panel-item-row:hover {
+  background: rgba(0, 210, 255, 0.05);
+  border-left-color: #00d2ff;
+}
+
+.hd-item-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: #5c7890;
+}
+
+.hd-item-id { color: #00d2ff; }
+.hd-item-txt {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  color: #ffffff;
+  margin: 4px 0 0 0;
+  line-height: 1.2;
+}
+
+.hd-profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.hd-stat-mini-box {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.hd-box-lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: #5c7890;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hd-box-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hd-panel-footer-action {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: #6c869c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 10px;
+}
+
+.hd-pulse-icon {
+  color: #00d2ff;
+  animation: hdIconPulse 1s linear infinite alternate;
+}
+
+@keyframes hdIconPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+.hd-status-online-lbl { color: #33ff66; text-shadow: 0 0 6px rgba(51, 255, 102, 0.4); }
+.hd-cyan-neon { color: #00d2ff; text-shadow: 0 0 8px rgba(0, 210, 255, 0.5); }

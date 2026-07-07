@@ -1,0 +1,312 @@
+/* ================= ISOLATED ECOSYSTEM SHELL WITH OUTER GLASS BORDER ================= */
+.db-viewport-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #020508;
+  color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  box-sizing: border-box;
+  padding: 12px; /* Inner bounding pull for glass framing layer */
+}
+
+/* Glass Edge Boundaries */
+.db-perimeter-glass-wire {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  box-shadow: inset 0 0 30px rgba(0, 210, 255, 0.05), 0 0 15px rgba(0, 210, 255, 0.1);
+  pointer-events: none;
+  z-index: 999;
+}
+
+.db-grid-matrix-floor {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 210, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.db-vignette-shading {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 20%, #010305 90%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Falling Stream Data Rain */
+.db-matrix-stream-canopy {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.db-stream-column-line {
+  position: absolute;
+  top: -150px;
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(180deg, transparent, rgba(0, 210, 255, 0.6), transparent);
+  animation: dbMatrixRain linear infinite;
+}
+
+@keyframes dbMatrixRain {
+  0% { top: -150px; }
+  100% { top: 100%; }
+}
+
+.db-scanning-horizon-laser {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.15), transparent);
+  z-index: 4;
+  pointer-events: none;
+  animation: dbLaserScan 6s ease-in-out infinite;
+}
+
+@keyframes dbLaserScan {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
+/* Main Workspace Flex Anchor */
+.db-main-workspace-deck {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 5;
+  overflow-y: auto;
+}
+
+/* ================= 4-COLUMN FILL GRID ENGINE ================= */
+.db-cards-grid-architecture {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 25px 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  .db-cards-grid-architecture { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .db-cards-grid-architecture { grid-template-columns: 1fr; }
+}
+
+/* Safe span controllers to eliminate open gaps completely */
+.db-span-3 { grid-column: span 3; }
+.db-span-1 { grid-column: span 1; }
+
+@media (max-width: 1100px) {
+  .db-span-3, .db-span-1 { grid-column: span 2; }
+}
+@media (max-width: 700px) {
+  .db-span-3, .db-span-1 { grid-column: span 1; }
+}
+
+/* ================= HUD GLASS SHARD CARDS ================= */
+.db-glass-hud-card {
+  position: relative;
+  background: rgba(6, 15, 24, 0.45);
+  border: 1px solid rgba(0, 210, 255, 0.12);
+  padding: 24px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.02);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.db-glass-hud-card.db-angle-tr { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%); }
+.db-glass-hud-card.db-angle-br { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%); }
+.db-glass-hud-card.db-angle-tl { clip-path: polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px); }
+
+.db-glass-hud-card.db-side-brackets-only {
+  border-top: none;
+  border-bottom: none;
+  border-left: 2px solid rgba(0, 210, 255, 0.4);
+  border-right: 2px solid rgba(0, 210, 255, 0.4);
+  background: rgba(6, 15, 24, 0.25);
+}
+
+.db-glass-hud-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(0, 210, 255, 0.45);
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.15), inset 0 0 10px rgba(0, 210, 255, 0.05);
+}
+
+.db-card-glitch-line {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00d2ff, transparent);
+  animation: dbScanningBeam 4s linear infinite;
+}
+
+@keyframes dbScanningBeam {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.db-card-lbl {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6c869c;
+  letter-spacing: 0.05rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-center-numerical-readout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.db-massive-stat {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.db-text-amber { color: #ff9d00; text-shadow: 0 0 15px rgba(255, 157, 0, 0.2); }
+.db-text-cyan { color: #00d2ff; text-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+
+.db-sub-unit {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: #5c7890;
+  margin-top: 8px;
+  letter-spacing: 0.05rem;
+}
+
+/* Linear & Circular meters */
+.db-rank-core-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.db-rank-circular-node {
+  width: 55px;
+  height: 55px;
+  border: 2px solid #00d2ff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.25);
+  background: rgba(0, 210, 255, 0.02);
+}
+
+.db-rnk-label { font-size: 0.6rem; color: #6c869c; font-family: 'Share Tech Mono', monospace; }
+.db-rnk-value { font-size: 1.3rem; font-weight: 900; font-family: 'Orbitron', sans-serif; margin-top: -2px; }
+
+.db-rank-data-stream { flex: 1; }
+.db-data-row-meta { display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; margin-bottom: 8px; color: #6c869c; }
+
+.db-matrix-linear-bar { width: 100%; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.db-matrix-linear-fill { height: 100%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
+
+/* Streaks */
+.db-streak-display-architecture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-streak-digit-glow { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; color: #ff9d00; text-shadow: 0 0 15px rgba(255,157,0,0.4); line-height: 1; }
+.db-streak-lbl-sub { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: #5c7890; margin-top: 8px; }
+
+/* Diagnostic Scroller Console */
+.db-terminal-log-scroller {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: #8fa8bc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(2, 6, 10, 0.5);
+  padding: 15px;
+  border: 1px solid rgba(0, 210, 255, 0.05);
+  height: 105px;
+  overflow-y: hidden;
+}
+
+.db-terminal-string-line {
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-terminal-prompt { color: #00d2ff; margin-right: 6px; }
+
+/* System Action Triggers */
+.db-button-stack-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.db-console-submit-btn {
+  width: 100%;
+  background: rgba(0, 210, 255, 0.05);
+  border: 1px solid #00d2ff;
+  padding: 14px;
+  font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.05rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.1);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.db-console-submit-btn:hover {
+  background: rgba(0, 210, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+  transform: scale(1.02);
+}
+
+.db-console-submit-btn.db-secondary {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #6c869c;
+}
+
+.db-console-submit-btn.db-secondary:hover {
+  border-color: #00d2ff;
+  color: #ffffff;
+  background: rgba(0, 210, 255, 0.05);
+}
+
+.db-cyan-neon { color: #00d2ff; text-shadow: 0 0 8px rgba(0, 210, 255, 0.5); }
