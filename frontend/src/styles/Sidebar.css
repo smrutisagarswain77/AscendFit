@@ -9,10 +9,12 @@
   -webkit-backdrop-filter: blur(25px);
   display: flex;
   flex-direction: column;
-  padding: 30px 15px;
-  gap: 35px;
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: clamp(15px, 3vh, 30px) 15px;
+  gap: clamp(15px, 4vh, 35px);
+  /* Synchronous easing configuration mapped precisely to structural spring curves */
+  transition: width 0.45s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s ease;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .sb-deck.sb-minimized {
@@ -26,6 +28,7 @@
   cursor: pointer;
   padding-left: 10px;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .sb-logo-interaction-shell {
@@ -95,8 +98,15 @@
 .sb-links-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(6px, 1.2vh, 12px);
   flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.sb-links-container::-webkit-scrollbar {
+  display: none;
 }
 
 .sb-nav-item-link {
@@ -105,7 +115,7 @@
   border: none;
   outline: none;
   width: 100%;
-  padding: 14px 18px;
+  padding: clamp(10px, 1.5vh, 14px) 18px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -118,14 +128,15 @@
   text-align: left;
   border-radius: 4px;
   overflow: hidden;
-  transition: color 0.3s ease, padding 0.3s ease;
+  /* Sync the padding change with the parent layout sizing */
+  transition: color 0.3s ease, padding 0.45s cubic-bezier(0.25, 1, 0.5, 1);
   box-sizing: border-box;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sb-nav-item-link.sb-item-squeezed {
-  padding: 14px 12px;
-  justify-content: flex-start;
+  padding: clamp(10px, 1.5vh, 14px) 16px;
 }
 
 /* --- ADVANCED TECH HOVER LAYERS --- */
@@ -139,7 +150,6 @@
   transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Interactive Targeting Micro-Brackets */
 .sb-node-corner {
   position: absolute;
   width: 4px;
@@ -151,7 +161,6 @@
 .sb-tl { top: 4px; left: 4px; border-top-width: 1px; border-left-width: 1px; transform: translate(4px, 4px); }
 .sb-br { bottom: 4px; right: 4px; border-bottom-width: 1px; border-right-width: 1px; transform: translate(-4px, -4px); }
 
-/* TRIGGER HOVER STATE */
 .sb-nav-item-link:hover {
   color: #00d2ff;
 }
@@ -171,7 +180,6 @@
   filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.8));
 }
 
-/* ACTIVE SELECTION ENGINE */
 .sb-nav-item-link.sb-active-node {
   color: #ffffff;
 }
@@ -217,6 +225,7 @@
 .sb-footer-action {
   border-top: 1px solid rgba(255, 255, 255, 0.04);
   padding-top: 20px;
+  flex-shrink: 0;
 }
 
 .sb-node-hover-bg-logout {

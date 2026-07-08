@@ -1,0 +1,336 @@
+/* ================= PREVIOUS ROOT ANCHORS REMAIN UNTOUCHED ================= */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap');
+
+.wcc-viewport-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #010205;
+  color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  box-sizing: border-box;
+  padding: clamp(6px, 1vw, 12px);
+}
+
+.wcc-perimeter-glass-wire {
+  position: absolute;
+  inset: clamp(6px, 1vw, 12px);
+  border: 1px solid rgba(0, 210, 255, 0.12);
+  pointer-events: none;
+  z-index: 999;
+  border-radius: 8px;
+}
+
+.wcc-background-particle-plane {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wcc-workspace-axis {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 5;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wcc-scrollable-content-node {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(12px, 1.5vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.8vw, 24px);
+  box-sizing: border-box;
+}
+
+/* ================= EXCLUSIVE UNIQUE SYSTEM EVENT ANIMATION ================= */
+.wcc-quantum-pulse-wave {
+  position: absolute;
+  top: 0; left: -50%; width: 30%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.15), transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+.wcc-grid-matrix-syncing .wcc-quantum-pulse-wave {
+  animation: wccQuantumSweep 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes wccQuantumSweep {
+  0% { left: -50%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: 150%; opacity: 0; }
+}
+
+.wcc-grid-matrix-syncing .wcc-perimeter-glass-wire {
+  animation: wccBorderGlowPulse 0.4s ease-in-out 2;
+}
+
+@keyframes wccBorderGlowPulse {
+  0%, 100% { border-color: rgba(0, 210, 255, 0.12); }
+  50% { border-color: rgba(0, 210, 255, 0.6); box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.2); }
+}
+
+/* ================= ADVANCED ENHANCED HUD STATISTICS BOARDS ================= */
+.wcc-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 1vw, 16px);
+}
+
+.wcc-stat-hud-box {
+  background: rgba(3, 10, 20, 0.4);
+  border: 1px solid rgba(0, 210, 255, 0.08);
+  padding: 14px clamp(10px, 1.2vw, 18px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+}
+
+.wcc-stat-hover-glare {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 45%, rgba(0, 210, 255, 0.08) 50%, transparent 55%);
+  background-size: 200% 200%;
+  background-position: 150% 150%;
+  transition: background-position 0.6s ease;
+  pointer-events: none;
+}
+
+.wcc-stat-hud-box:hover {
+  transform: scale(1.03) translateZ(10px);
+  border-color: rgba(0, 210, 255, 0.35);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(0, 210, 255, 0.1);
+}
+
+.wcc-stat-hud-box:hover .wcc-stat-hover-glare {
+  background-position: -50% -50%;
+}
+
+.wcc-stat-lbl { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; color: #5c7890; font-weight: 700; }
+.wcc-stat-val { font-family: 'Orbitron', sans-serif; font-size: clamp(1.2rem, 1.5vw, 1.8rem); font-weight: 900; margin-top: 4px; }
+.wcc-stat-unit { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; color: #5c7890; font-weight: 600; margin-left: 2px; }
+
+/* ================= TYPING GLITCH & FIELD INPUT ENHANCEMENTS ================= */
+.wcc-search-wrapper-node, .wcc-modal-input-shell {
+  position: relative;
+  background: rgba(1, 4, 9, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.wcc-search-wrapper-node:hover, .wcc-modal-input-shell:hover {
+  border-color: rgba(0, 210, 255, 0.25);
+}
+
+.wcc-input-cyber-laser {
+  position: absolute;
+  bottom: 0; left: 0; width: 0%; height: 2px;
+  background: linear-gradient(90deg, #00d2ff, #bd00ff);
+  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wcc-terminal-input, .wcc-form-input {
+  width: 100%; background: transparent; border: none; padding: 10px 12px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem; color: #ffffff; outline: none;
+  position: relative;
+}
+
+.wcc-terminal-input { padding-left: 36px; }
+.wcc-search-vector-icon { position: absolute; left: 12px; color: #5c7890; font-size: 0.9rem; transition: color 0.3s; }
+
+/* Active Field Multi-Layered Indicators */
+.wcc-search-wrapper-node:focus-within, .wcc-modal-input-shell:focus-within {
+  border-color: rgba(0, 210, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.15);
+}
+
+.wcc-search-wrapper-node:focus-within .wcc-input-cyber-laser,
+.wcc-modal-input-shell:focus-within .wcc-input-cyber-laser {
+  width: 100%;
+}
+
+.wcc-search-wrapper-node:focus-within .wcc-search-vector-icon {
+  color: #00d2ff;
+  animation: wccVibrateIcon 0.3s linear;
+}
+
+/* Reactive Type Text Glow Animation */
+.wcc-terminal-input:focus, .wcc-form-input:focus {
+  animation: wccTypeGlowField 0.4s ease-out forwards;
+  text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+}
+
+@keyframes wccTypeGlowField {
+  0% { background: rgba(0, 210, 255, 0); }
+  50% { background: rgba(0, 210, 255, 0.03); }
+  100% { background: rgba(0, 210, 255, 0.01); }
+}
+
+@keyframes wccVibrateIcon {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* ================= THE LIVE DECK MODULES ================= */
+.wcc-continue-glass-banner {
+  background: linear-gradient(90deg, rgba(189, 0, 255, 0.06), rgba(0, 210, 255, 0.03));
+  border: 1px dashed rgba(0, 210, 255, 0.25);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden; border-radius: 4px;
+}
+.wcc-radar-pulse-glow { position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: #00d2ff; box-shadow: 0 0 12px #00d2ff; }
+.wcc-live-tag { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; font-weight: 900; color: #bd00ff; display: flex; align-items: center; gap: 6px; letter-spacing: 0.04rem; }
+.wcc-blinking-dot { width: 6px; height: 6px; background: #00d2ff; border-radius: 50%; animation: wccGlowPulse 1.2s infinite ease-in-out; box-shadow: 0 0 6px #00d2ff; }
+
+@keyframes wccGlowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.wcc-continue-details h3 { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 700; margin: 4px 0; }
+.wcc-live-metrics { display: flex; gap: 16px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; color: #a3b8cc; }
+.wcc-live-metrics span { display: flex; align-items: center; gap: 4px; }
+
+.wcc-action-glow-btn {
+  background: rgba(0, 210, 255, 0.04); border: 1px solid #00d2ff;
+  color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;
+  padding: 10px 18px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: all 0.25s ease;
+}
+.wcc-action-glow-btn:hover { background: #00d2ff; color: #010205; box-shadow: 0 0 14px rgba(0, 210, 255, 0.4); }
+
+.wcc-operations-row { display: flex; align-items: center; gap: 12px; }
+.wcc-filter-cluster { display: flex; gap: 6px; }
+.wcc-filter-node-btn {
+  background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #a3b8cc; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.8rem;
+  padding: 8px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s ease;
+}
+.wcc-filter-node-btn:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
+.wcc-filter-node-btn.wcc-active-filter { background: rgba(0, 210, 255, 0.05); border-color: rgba(0, 210, 255, 0.3); color: #00d2ff; }
+
+.wcc-deploy-workout-btn {
+  background: rgba(189, 0, 255, 0.05); border: 1px solid rgba(189, 0, 255, 0.3);
+  color: #ffffff; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.72rem;
+  padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wcc-deploy-workout-btn:hover { background: #bd00ff; border-color: #bd00ff; box-shadow: 0 0 12px rgba(189, 0, 255, 0.4); }
+
+/* ================= CARDS LAYOUT DESIGN GRID ================= */
+.wcc-cards-layout-mesh { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.2vw, 16px); }
+.wcc-workout-hud-card {
+  background: rgba(3, 10, 20, 0.45); border: 1px solid rgba(0, 210, 255, 0.08);
+  padding: 16px; border-radius: 4px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wcc-workout-hud-card:hover { background: rgba(5, 15, 30, 0.55); border-color: rgba(0, 210, 255, 0.25); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); transform: translateY(-2px); }
+.wcc-card-laser-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.25), transparent); opacity: 0; }
+.wcc-workout-hud-card:hover .wcc-card-laser-scanner { animation: wccScanSweeper 2s linear infinite; }
+
+@keyframes wccScanSweeper { 0% { top: 0%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+.wcc-card-top-header { display: flex; justify-content: space-between; align-items: center; }
+.wcc-status-strip { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; display: inline-flex; align-items: center; gap: 4px; }
+.wcc-status-strip.strip-in-progress { background: rgba(0, 210, 255, 0.06); border: 1px solid rgba(0, 210, 255, 0.25); color: #00d2ff; }
+.wcc-status-strip.strip-completed { background: rgba(0, 220, 120, 0.06); border: 1px solid rgba(0, 220, 120, 0.25); color: #00dc78; }
+.wcc-status-strip.strip-draft { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1); color: #8fa5b8; }
+
+.wcc-card-timestamp-lbl { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; color: #5c7890; font-weight: 600; }
+.wcc-card-title-string { font-family: 'Orbitron', sans-serif; font-size: 1.05rem; font-weight: 700; margin: 12px 0 2px 0; color: #ffffff; }
+.wcc-category-subtag-node { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; color: #5c7890; font-weight: 700; letter-spacing: 0.02rem; }
+
+.wcc-readiness-node { background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); border-radius: 4px; padding: 8px 10px; margin: 14px 0; position: relative; }
+.wcc-readiness-flex-row { display: flex; align-items: center; gap: 6px; }
+.wcc-indicator-bead { width: 6px; height: 6px; border-radius: 50%; }
+.wcc-readiness-label { font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 700; }
+.wcc-recovery-sub-metric { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; color: #8fa5b8; display: block; margin-top: 1px; }
+
+.wcc-readiness-node.readiness-ready .wcc-indicator-bead { background: #00dc78; box-shadow: 0 0 6px #00dc78; }
+.wcc-readiness-node.readiness-ready .wcc-readiness-label { color: #00dc78; }
+.wcc-readiness-node.readiness-moderate .wcc-indicator-bead { background: #ffb700; box-shadow: 0 0 6px #ffb700; }
+.wcc-readiness-node.readiness-moderate .wcc-readiness-label { color: #ffb700; }
+.wcc-readiness-node.readiness-rest-recommended .wcc-indicator-bead { background: #ff3b3b; box-shadow: 0 0 6px #ff3b3b; }
+.wcc-readiness-node.readiness-rest-recommended .wcc-readiness-label { color: #ff3b3b; }
+.wcc-ai-badge-ticker { position: absolute; top: 8px; right: 10px; font-family: 'Orbitron', sans-serif; font-size: 0.55rem; font-weight: 900; color: #00d2ff; background: rgba(0, 210, 255, 0.05); padding: 1px 4px; border: 1px solid rgba(0, 210, 255, 0.2); border-radius: 2px; }
+
+.wcc-card-metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px dashed rgba(255, 255, 255, 0.04); padding-top: 12px; margin-bottom: 14px; }
+.wcc-mini-data-slot { display: flex; flex-direction: column; }
+.wcc-slot-lbl { font-family: 'Rajdhani', sans-serif; font-size: 0.62rem; color: #5c7890; font-weight: 700; }
+.wcc-slot-val { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 700; margin-top: 1px; }
+
+.wcc-card-actions-footer { display: flex; gap: 8px; align-items: center; }
+.wcc-footer-trigger-btn { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); color: #e1e7ed; padding: 8px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.wcc-footer-trigger-btn:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+.wcc-footer-trigger-btn.primary-start { flex: 1; background: rgba(0, 210, 255, 0.03); border-color: rgba(0, 210, 255, 0.25); color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 0.72rem; font-weight: 700; gap: 4px; }
+.wcc-footer-trigger-btn.primary-start:hover { background: #00d2ff; color: #010205; border-color: #00d2ff; }
+.wcc-footer-trigger-btn.text-danger:hover { background: rgba(255, 59, 59, 0.1); border-color: #ff3b3b; color: #ff3b3b; }
+.wcc-footer-secondary-group { display: flex; gap: 4px; }
+
+.wcc-empty-state-card { background: rgba(3, 10, 20, 0.3); border: 1px dashed rgba(0, 210, 255, 0.12); padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.wcc-empty-radar-icon { width: 48px; height: 48px; border: 1px dashed rgba(0, 210, 255, 0.3); border-radius: 50%; margin-bottom: 16px; position: relative; animation: wccRadarRotation 6s linear infinite; }
+.wcc-empty-radar-icon::before { content: ""; position: absolute; top: 4px; left: 4px; width: 6px; height: 6px; background: #00d2ff; border-radius: 50%; }
+@keyframes wccRadarRotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.wcc-empty-state-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 0 0 6px 0; letter-spacing: 0.04rem; }
+.wcc-empty-state-card p { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: #5c7890; margin: 0 0 20px 0; }
+
+/* ================= MODAL MATRIX CONTROLS ================= */
+.wcc-modal-backdrop { position: absolute; inset: 0; background: rgba(1, 2, 5, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.wcc-modal-glass-container { background: rgba(3, 10, 22, 0.85); border: 1px solid rgba(0, 210, 255, 0.2); width: 100%; max-width: 480px; padding: 24px; position: relative; box-sizing: border-box; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); }
+.wcc-modal-glitch-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #bd00ff, #00d2ff); }
+.wcc-modal-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
+.wcc-modal-header-row h3 { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700; margin: 0; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+.wcc-modal-close-trigger { background: transparent; border: none; color: #5c7890; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; }
+.wcc-modal-close-trigger:hover { color: #ffffff; }
+.wcc-modal-form-body { display: flex; flex-direction: column; gap: 16px; margin-top: 18px; }
+.wcc-form-field-group { display: flex; flex-direction: column; gap: 4px; }
+.wcc-field-lbl { font-family: 'Orbitron', sans-serif; font-size: 0.62rem; font-weight: 700; color: #5c7890; letter-spacing: 0.02rem; }
+
+.wcc-select-override { color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.wcc-select-override option { background: #030a16; color: #ffffff; }
+
+.wcc-modal-form-actions-footer { display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 16px; margin-top: 4px; }
+.wcc-form-cancel-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #8fa5b8; font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 700; padding: 10px 16px; border-radius: 4px; cursor: pointer; }
+.wcc-form-cancel-btn:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
+.wcc-form-deploy-btn { background: rgba(0, 210, 255, 0.05); border: 1px solid #00d2ff; color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 700; padding: 10px 18px; border-radius: 4px; cursor: pointer; }
+.wcc-form-deploy-btn:hover { background: #00d2ff; color: #010205; box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+
+.text-cyan { color: #00d2ff; }
+.text-purple { color: #bd00ff; }
+
+/* ================= ADAPTIVE STRUCTURAL MEDIA RESPONSIVENESS ================= */
+@media (max-width: 1200px) {
+  .wcc-cards-layout-mesh { grid-template-columns: repeat(2, 1fr); }
+  .wcc-summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .wcc-cards-layout-mesh { grid-template-columns: 1fr; }
+  .wcc-summary-grid { grid-template-columns: 1fr; }
+  .wcc-operations-row { flex-direction: column; align-items: stretch; }
+  .wcc-filter-cluster { overflow-x: auto; padding-bottom: 4px; }
+}

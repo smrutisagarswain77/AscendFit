@@ -6,7 +6,8 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(0, 210, 255, 0.12);
-  padding: 16px 30px;
+  /* Fluid responsive horizontal padding */
+  padding: 16px clamp(12px, 2vw, 30px);
   background: rgba(2, 5, 8, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -14,6 +15,8 @@
   z-index: 90;
   overflow: hidden;
   box-sizing: border-box;
+  width: 100%;
+  gap: 12px;
 }
 
 /* Linear Scanning Glint Sweeper Beam across the entire header */
@@ -39,14 +42,19 @@
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+  min-width: 0; /* Prevents text overflow breaks */
 }
 
 .hd-protocol-lbl {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.05rem;
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
   font-weight: 700;
   letter-spacing: 0.12rem;
   color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .hd-sub-status {
@@ -63,6 +71,7 @@
   border-radius: 50%;
   box-shadow: 0 0 8px #00d2ff;
   animation: hdPulseGlow 1.2s infinite alternate;
+  flex-shrink: 0;
 }
 
 @keyframes hdPulseGlow {
@@ -75,6 +84,7 @@
   font-size: 0.72rem;
   color: #5c7890;
   margin-left: 6px;
+  white-space: nowrap;
 }
 
 /* Right-side alignment clusters */
@@ -82,7 +92,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 24px;
+  gap: clamp(10px, 1.8vw, 24px); /* Fluid gap handling */
+  flex-shrink: 0;
 }
 
 /* ================= CRAZY ADVANCED CHRONOGRAPH TIMER ENGINE ================= */
@@ -92,12 +103,13 @@
   font-family: 'Share Tech Mono', monospace;
   background: rgba(3, 8, 15, 0.7);
   border: 1px solid rgba(0, 210, 255, 0.15);
-  padding: 8px 20px;
+  padding: 8px clamp(10px, 1.5vw, 20px);
   border-radius: 4px;
   cursor: crosshair;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .hd-timer-matrix-grid-back {
@@ -121,7 +133,7 @@
 }
 
 .hd-time-digits {
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
   color: #ffffff;
   font-weight: 700;
   letter-spacing: 0.05rem;
@@ -130,9 +142,9 @@
 }
 
 .hd-ms-digits {
-  font-size: 0.95rem;
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
   color: rgba(0, 210, 255, 0.5);
-  width: 34px;
+  width: clamp(26px, 2.2vw, 34px);
   margin-left: 4px;
   text-align: left;
   transition: color 0.3s ease, font-weight 0.3s ease;
@@ -208,6 +220,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .hd-icon-trigger-btn {
@@ -381,7 +394,7 @@
   position: absolute;
   top: 54px;
   right: 0;
-  width: 280px;
+  width: clamp(240px, 28vw, 280px); /* Smart width constraints */
   background: rgba(4, 10, 18, 0.96);
   border: 1px solid #00d2ff;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85), inset 0 0 15px rgba(0, 210, 255, 0.05);
@@ -501,3 +514,27 @@
 
 .hd-status-online-lbl { color: #33ff66; text-shadow: 0 0 6px rgba(51, 255, 102, 0.4); }
 .hd-cyan-neon { color: #00d2ff; text-shadow: 0 0 8px rgba(0, 210, 255, 0.5); }
+
+/* ================= RESPONSIVE SQUEEZE BREAKPOINTS ================= */
+@media (max-width: 768px) {
+  /* Hide text-heavy operator callsigns when workspace squeezes */
+  .hd-avatar-meta-stack {
+    display: none;
+  }
+  .hd-profile-trigger-btn {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 540px) {
+  /* Drop Sub-Status to conserve global header space */
+  .hd-sub-status {
+    display: none;
+  }
+  /* Scale drop-down positioning so they don't break outside bounds */
+  .hd-dropdown-glass-panel {
+    top: 52px;
+    width: calc(100vw - 32px);
+    right: -10px;
+  }
+}

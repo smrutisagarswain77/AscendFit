@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiGrid, 
@@ -18,6 +18,24 @@ const Sidebar = ({ activeTab, setActiveTab, isMinimized, setIsMinimized, onLogou
     { id: "ai-coach", label: "AI Coach", icon: <FiCpu /> },
     { id: "settings", label: "Settings", icon: <FiSliders /> }
   ];
+
+  // Automated Responsive Synchronization Engine
+  useEffect(() => {
+    const handleResize = () => {
+      // Automatically minimizes the panel when frame drops below 1024px width
+      if (window.innerWidth <= 1024) {
+        setIsMinimized(true);
+      } else {
+        setIsMinimized(false);
+      }
+    };
+
+    // Evaluate current window dimensions on asset initialization
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setIsMinimized]);
 
   return (
     <aside className={`sb-deck ${isMinimized ? "sb-minimized" : ""}`}>

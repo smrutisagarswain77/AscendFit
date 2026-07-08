@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+/* ================= SYSTEM IMMERSIVE VIEWPORT CORE ================= */
+.ss-viewport-shield {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #020710;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(0, 210, 255, 0.07) 0%, transparent 70%),
+    radial-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* Absolute topmost intercept layer */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Linear Scanning Glint Sweep Beam across the viewport */
+.ss-laser-glint-bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.4), transparent);
+  box-shadow: 0 0 15px #00d2ff, 0 0 30px rgba(0, 210, 255, 0.5);
+  pointer-events: none;
+  z-index: 2;
+  animation: ssLaserSweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes ssLaserSweep {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* ================= CENTRAL DATA MATRIX GRID DECK ================= */
+.ss-central-matrix-deck {
+  width: clamp(290px, 85vw, 520px);
+  padding: 40px;
+  background: rgba(2, 7, 16, 0.45);
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 210, 255, 0.05);
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.ss-branding-logo-wrapper {
+  width: 100px;
+  height: 80px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ss-vector-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ss-glow-arrow {
+  filter: drop-shadow(0 0 6px #00d2ff);
+}
+
+.ss-title-string {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 4vw, 2.3rem);
+  letter-spacing: 0.25rem;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.ss-cyan-neon {
+  color: #00d2ff;
+  text-shadow: 0 0 12px rgba(0, 210, 255, 0.7);
+}
+
+.ss-division-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  color: #5c7890;
+  letter-spacing: 0.1rem;
+  margin: 0 0 35px 0;
+}
+
+/* ================= HUD TELEMETRY SUB-GRID ================= */
+.ss-hud-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.ss-telemetry-box {
+  background: rgba(6, 15, 24, 0.4);
+  border: 1px solid rgba(0, 210, 255, 0.08);
+  padding: 12px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.ss-box-icon {
+  font-size: 1.3rem;
+  color: #5c7890;
+  flex-shrink: 0;
+}
+
+.ss-box-icon.ss-cyan {
+  color: #00d2ff;
+  filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.4));
+}
+
+.ss-meta-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.ss-box-lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: #5c7890;
+  letter-spacing: 0.05rem;
+}
+
+.ss-box-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+/* ================= CYBER PROGRESS SQUEEZE LOADING BAR ================= */
+.ss-bar-perimeter-wire {
+  height: 4px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible; /* Dynamic tracker glow escapes clipping bounds */
+  margin-bottom: 12px;
+}
+
+.ss-loading-progress-core {
+  height: 100%;
+  background: linear-gradient(90deg, #005fad 0%, #00d2ff 70%, #ffffff 100%);
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.05s linear;
+}
+
+.ss-bar-glint-point {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #00d2ff, 0 0 4px #ffffff;
+  pointer-events: none;
+  transition: left 0.05s linear;
+}
+
+/* ================= CONSOLE FEED READOUT FOOTER ================= */
+.ss-readout-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.ss-console-feed-stack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: #5c7890;
+  min-width: 0; /* Defensive overflow shield */
+  text-align: left;
+}
+
+.ss-terminal-symbol {
+  color: #00d2ff;
+  display: flex;
+  align-items: center;
+}
+
+.ss-stage-label-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-percentage-numeric-node {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.ss-percent-symbol {
+  font-size: 0.8rem;
+  color: #5c7890;
+  margin-left: 1px;
+}
