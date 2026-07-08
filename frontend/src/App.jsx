@@ -6,7 +6,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";     
 import Dashboard from "./pages/Dashboard";
 import Workouts from "./pages/Workouts";
-
+import Exercises from "./pages/Exercises";
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -17,6 +17,7 @@ function AnimatedRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/workouts" element={<Workouts />} />
+        <Route path="/exercises" element={<Exercises />} />
       </Routes>
     </AnimatePresence>
   );
