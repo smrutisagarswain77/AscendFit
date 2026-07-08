@@ -1,0 +1,454 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+.up-viewport-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #010307;
+  color: #ffffff;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: clamp(8px, 1.2vw, 16px);
+  display: flex;
+  flex-direction: column;
+}
+
+.up-perimeter-grid-bracket {
+  position: absolute;
+  inset: clamp(8px, 1.2vw, 16px);
+  border: 1px solid rgba(0, 210, 255, 0.1);
+  pointer-events: none;
+  z-index: 999;
+  border-radius: 6px;
+}
+
+.up-ambient-matrix-plane {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.up-scroll-engine-frame {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.5vw, 20px);
+  padding-right: 4px;
+  box-sizing: border-box;
+}
+
+.up-scroll-engine-frame::-webkit-scrollbar { width: 4px; }
+.up-scroll-engine-frame::-webkit-scrollbar-thumb { background: rgba(0, 210, 255, 0.15); border-radius: 2px; }
+
+/* ================= THE QUANTUM EXIT NODE (X SHAPE CLOSER) ================= */
+.up-quantum-close-trigger {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: rgba(2, 8, 18, 0.8);
+  border: 1px solid rgba(255, 59, 59, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.up-close-target-ring {
+  position: absolute; width: 30px; height: 30px; border: 1px dashed rgba(255, 59, 59, 0); 
+  border-radius: 50%; transition: all 0.3s;
+}
+
+.up-close-crosshair-h { position: absolute; left: 5px; right: 5px; height: 1px; background: rgba(255, 59, 59, 0); transition: all 0.3s; }
+.up-close-crosshair-v { position: absolute; top: 5px; bottom: 5px; width: 1px; background: rgba(255, 59, 59, 0); transition: all 0.3s; }
+.up-close-vector-icon { color: #5c7890; font-size: 1.2rem; z-index: 2; transition: all 0.3s; }
+
+/* EXIT NODE HOVER COMMAND INTERACTION */
+.up-quantum-close-trigger:hover {
+  border-color: #ff3b3b;
+  background: #090204;
+  box-shadow: 0 0 15px rgba(255, 59, 59, 0.3);
+  transform: rotate(90deg);
+}
+
+.up-quantum-close-trigger:hover .up-close-target-ring {
+  border-color: rgba(255, 59, 59, 0.4);
+  transform: scale(1.1) rotate(-90deg);
+  animation: spin 4s linear infinite;
+}
+
+.up-quantum-close-trigger:hover .up-close-crosshair-h,
+.up-quantum-close-trigger:hover .up-close-crosshair-v {
+  background: rgba(255, 59, 59, 0.2);
+}
+
+.up-quantum-close-trigger:hover .up-close-vector-icon {
+  color: #ff3b3b;
+  filter: drop-shadow(0 0 4px #ff3b3b);
+}
+
+@keyframes spin { 100% { transform: scale(1.1) rotate(270deg); } }
+
+/* ================= CENTRAL HOVER REACTIVE 3D GLOW SYSTEM ================= */
+.up-3d-glow-card {
+  position: relative;
+  background: rgba(3, 11, 22, 0.45);
+  border: 1px solid rgba(0, 210, 255, 0.08);
+  border-radius: 4px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+  transition: transform 0.12s ease, border-color 0.3s, box-shadow 0.3s;
+}
+
+.up-3d-glow-card:hover {
+  border-color: rgba(0, 210, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+  background-image: radial-gradient(140px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(0, 210, 255, 0.04), transparent 85%);
+  transform: translateY(-2px) rotateX(0.5deg) rotateY(-0.5deg);
+}
+
+/* ================= 1. HERO IDENTITY HUD ROW ================= */
+.up-hero-identity-section {
+  position: relative;
+  width: 100%;
+  min-height: 180px; /* Forces enough room vertically */
+  padding: 24px;
+  background: rgba(2, 8, 16, 0.65);
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  border-radius: 8px;
+  overflow: visible !important; /* Prevents the rank text and top circles from getting chopped off */
+  margin-bottom: 24px;
+}
+
+.up-card-corner-tr {
+  position: absolute; top: 0; right: 0; width: 6px; height: 6px;
+  border-top: 2px solid #00d2ff; border-right: 2px solid #00d2ff;
+}
+
+.up-hero-grid-layout {
+  display: flex;
+  align-items: center; /* Centers the content cleanly */
+  gap: 32px;
+  width: 100%;
+  height: 100%;
+}
+
+.up-avatar-emblem-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: visible; /* Allows the outer glow/radar ring animation to overflow safely */
+}
+
+.up-avatar-pulse-core {
+  position: absolute; inset: 4px; border: 1px dashed transparent; border-radius: 50%;
+  animation: slowPulse 3s infinite linear;
+}
+
+@keyframes slowPulse { 0% { transform: rotate(0deg); opacity: 0.3; } 50% { opacity: 0.8; } 100% { transform: rotate(360deg); opacity: 0.3; } }
+
+.up-emblem-vector-surface { position: relative; z-index: 2; width: 100%; height: 100%; }
+
+.up-avatar-interactive-badge {
+  position: absolute; bottom: 8px; right: 8px; width: 28px; height: 28px;
+  background: #020812; border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: #00d2ff;
+  font-size: 0.75rem; z-index: 4; opacity: 0; transition: all 0.25s ease;
+}
+
+.up-avatar-emblem-wrapper:hover .up-avatar-interactive-badge { opacity: 1; transform: scale(1.1); box-shadow: 0 0 8px #00d2ff; }
+
+
+.up-identity-metadata-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex-grow: 1;
+}
+.up-rank-badge-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+.up-rank-glitch-lbl {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.up-streak-flame-chip {
+  display: flex; align-items: center; gap: 6px; background: rgba(255, 85, 0, 0.08);
+  border: 1px solid rgba(255, 85, 0, 0.25); padding: 4px 10px; border-radius: 2px;
+  font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 700; color: #ff5500;
+}
+
+.up-flame-vector { animation: flicker 1s infinite alternate; }
+@keyframes flicker { 0% { filter: drop-shadow(0 0 1px #ff5500); } 100% { filter: drop-shadow(0 0 6px #ff8800); } }
+
+.up-identity-username {
+  font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 2.5vw, 2.8rem); font-weight: 900; margin: 4px 0 8px 0;
+  letter-spacing: -0.04rem; color: #ffffff; text-shadow: 0 0 12px rgba(255,255,255,0.05);
+}
+
+.up-identity-bio-preview {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; color: #8fa5b8; margin: 0 0 16px 0; max-width: 700px; line-height: 1.4;
+}
+
+/* HIGH TECH XP PROGRESS BAR */
+.up-xp-matrix-bar-container { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 600px; }
+.up-xp-bar-numerical-labels { display: flex; justify-content: space-between; font-family: 'Orbitron', sans-serif; font-size: 0.65rem; font-weight: 700; color: #5c7890; }
+.up-xp-current-level-tag { color: #ffffff; letter-spacing: 0.02rem; }
+
+.up-xp-progress-track-rail {
+  position: relative; height: 6px; background: rgba(255,255,255,0.03); border-radius: 2px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+.up-xp-progress-fill-laser { height: 100%; border-radius: 2px; position: relative; }
+.up-xp-bar-shimmer {
+  position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: barShimmer 3s infinite linear;
+}
+@keyframes barShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+/* ================= LAYOUT SPLIT GRID MATRIX SYSTEM ================= */
+.up-dashboard-columns-matrix {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(12px, 1.5vw, 20px);
+}
+
+.up-telemetry-left-stack, .up-telemetry-right-stack {
+  display: flex; flex-direction: column; gap: clamp(12px, 1.5vw, 20px);
+}
+
+.up-system-card-panel { display: flex; flex-direction: column; }
+.up-panel-header {
+  display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04); background: rgba(2, 6, 14, 0.3);
+}
+
+.up-panel-header h3 {
+  font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 800; color: #5c7890;
+  display: flex; align-items: center; gap: 6px; margin: 0; letter-spacing: 0.02rem;
+}
+
+.up-panel-action-btn {
+  background: rgba(0, 210, 255, 0.04); border: 1px solid rgba(0, 210, 255, 0.25);
+  color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 0.6rem; font-weight: 800;
+  padding: 5px 10px; border-radius: 2px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: all 0.2s ease;
+}
+.up-panel-action-btn:hover { background: #00d2ff; color: #02060e; box-shadow: 0 0 8px rgba(0, 210, 255, 0.3); }
+
+.up-action-button-group { display: flex; gap: 6px; }
+.up-panel-action-btn.success-btn { border-color: rgba(0, 255, 170, 0.3); color: #00ffaa; background: rgba(0, 255, 170, 0.02); }
+.up-panel-action-btn.success-btn:hover { background: #00ffaa; color: #02060e; box-shadow: 0 0 8px #00ffaa; }
+.up-panel-action-btn.cancel-btn { border-color: rgba(255, 59, 59, 0.2); color: #ff3b3b; background: transparent; }
+
+.up-panel-body-grid { padding: 16px; flex: 1; }
+
+/* ================= 2. INFORMATION PROFILE GRID ================= */
+.up-read-only-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.up-info-cell { display: flex; flex-direction: column; gap: 4px; }
+.up-info-cell.span-2 { grid-column: span 2; }
+.up-info-cell .lbl { font-family: 'Orbitron', sans-serif; font-size: 0.58rem; color: #5c7890; font-weight: 700; }
+.up-info-cell .val { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 600; color: #ffffff; }
+.up-info-divider { grid-column: span 2; height: 1px; background: rgba(255, 255, 255, 0.03); margin: 4px 0; }
+.up-info-cell.read-only .val { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; }
+.up-info-cell.read-only .val.security-text { color: #a3b8cc; }
+
+/* EDITABLE FORM INPUT STRINGS */
+.up-editable-profile-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.up-input-container-node { display: flex; flex-direction: column; gap: 4px; }
+.up-input-container-node.span-2 { grid-column: span 2; }
+.up-input-container-node label { font-family: 'Orbitron', sans-serif; font-size: 0.55rem; color: #00d2ff; font-weight: 700; }
+.up-form-field {
+  background: #020710; border: 1px solid rgba(0, 210, 255, 0.15); border-radius: 2px;
+  padding: 8px 10px; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem; color: #ffffff; outline: none;
+}
+.up-form-field:focus { border-color: #bd00ff; box-shadow: 0 0 6px rgba(189, 0, 255, 0.2); }
+.up-form-field.textarea-field { resize: none; height: 50px; }
+
+/* ================= 4. GENERAL HUD GRID STATS ================= */
+.up-statistics-grid-layout-mesh {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;
+}
+
+.up-stat-hud-block {
+  padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; min-height: 84px;
+}
+
+.up-stat-icon-wrapper-corner {
+  position: absolute; top: 12px; right: 12px; color: #3a4f60; font-size: 1rem; transition: color 0.3s;
+}
+.up-stat-hud-block:hover .up-stat-icon-wrapper-corner { color: #00d2ff; }
+
+.up-stat-lbl-tag { font-family: 'Orbitron', sans-serif; font-size: 0.55rem; color: #5c7890; font-weight: 700; }
+.up-stat-main-value { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 900; color: #ffffff; margin: 2px 0; }
+.up-stat-sub-diagnostic { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; color: #8fa5b8; }
+
+/* ================= 5. HARDWARE ACHIEVEMENT BADGE GRID ================= */
+.up-achievements-hud-grid-mesh {
+  padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; flex: 1;
+}
+
+.up-achievement-badge-node {
+  background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03);
+  padding: 10px; border-radius: 3px; display: flex; align-items: center; gap: 12px;
+}
+
+.up-badge-vector-hexagon {
+  width: 44px; height: 44px; border: 1px solid; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; background: rgba(1, 4, 10, 0.6); flex-shrink: 0;
+}
+.up-badge-icon { font-size: 1.15rem; }
+
+.up-badge-text-telemetry { display: flex; flex-direction: column; min-width: 0; }
+.up-badge-text-telemetry h4 { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700; margin: 0; color: #ffffff; }
+.up-badge-text-telemetry p { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; color: #8fa5b8; margin: 2px 0 0 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+.unlocked-timestamp { font-family: 'Orbitron', sans-serif; font-size: 0.55rem; color: #5c7890; margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+.node-locked-dimmed { opacity: 0.4; background: rgba(0,0,0,0.2); }
+
+/* ================= 6. RANK EVOLUTION SCHEMATIC MAP ================= */
+.up-rank-evolution-map-node { padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; }
+.up-evolution-axis-row { display: flex; align-items: center; justify-content: space-between; }
+
+.up-evo-rank-block { display: flex; flex-direction: column; align-items: center; width: 80px; text-align: center; }
+.up-evo-rank-block .sym { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; filter: drop-shadow(0 0 6px currentColor); }
+.up-evo-rank-block .nm { font-family: 'Orbitron', sans-serif; font-size: 0.62rem; font-weight: 700; margin-top: 4px; color: #ffffff; }
+.up-evo-rank-block.next-locked { opacity: 0.5; }
+
+.up-evo-connector-line-laser {
+  flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06); position: relative; margin: 0 16px;
+}
+.up-laser-pulse-bead {
+  position: absolute; top: -2px; left: 0; width: 5px; height: 5px; background: #00d2ff; border-radius: 50%;
+  box-shadow: 0 0 6px #00d2ff; animation: laserTrack 2s infinite linear;
+}
+@keyframes laserTrack { 100% { left: 100%; } }
+
+.up-evo-telemetry-summary-alert {
+  background: rgba(3, 10, 20, 0.6); border: 1px solid rgba(0, 210, 255, 0.12);
+  padding: 8px 12px; border-radius: 2px; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem;
+  color: #a3b8cc; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+/* ================= 7. CHRONOLOGICAL MILESTONE RAILS ================= */
+.bottom-row-matrix { margin-top: 4px; padding-bottom: 24px; }
+.up-timeline-linear-rail { padding: 10px 16px; display: flex; flex-direction: column; position: relative; }
+.up-timeline-linear-rail::before { content: ''; position: absolute; top: 0; bottom: 0; left: 96px; width: 1px; background: rgba(255,255,255,0.04); }
+
+.up-timeline-node-event { display: flex; align-items: center; padding: 10px 0; position: relative; }
+.up-timeline-left-time-stamp { width: 80px; text-align: right; font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: #5c7890; font-weight: 700; }
+
+.up-timeline-center-node-bead {
+  width: 7px; height: 7px; background: #010307; border: 2px solid #5c7890; border-radius: 50%;
+  position: absolute; left: 93px; z-index: 2; transition: all 0.3s;
+}
+.up-timeline-node-event:hover .up-timeline-center-node-bead { border-color: #00d2ff; background: #00d2ff; box-shadow: 0 0 6px #00d2ff; }
+
+.up-timeline-right-event-data { margin-left: 32px; display: flex; flex-direction: column; }
+.up-timeline-right-event-data h5 { font-family: 'Orbitron', sans-serif; font-size: 0.78rem; font-weight: 700; margin: 0; color: #ffffff; }
+.up-timeline-right-event-data p { font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; color: #8fa5b8; margin: 2px 0 0 0; }
+
+/* ================= 8. RECENT RUNTIME TERMINAL CHANNELS ================= */
+.up-recent-activity-list-mesh { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.up-activity-strip-row {
+  background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.02);
+  padding: 8px 12px; border-radius: 2px; display: flex; align-items: center; gap: 12px;
+}
+
+.up-activity-indicator-glow-dot { width: 5px; height: 5px; background: #bd00ff; border-radius: 50%; box-shadow: 0 0 6px #bd00ff; }
+.up-activity-meta-core { flex: 1; display: flex; flex-direction: column; }
+.up-activity-meta-core h6 { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700; margin: 0; color: #ffffff; }
+.up-activity-meta-core span { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; color: #5c7890; font-weight: 500; }
+
+.up-activity-right-metric-block { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.up-activity-right-metric-block .time { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; color: #5c7890; }
+.up-activity-right-metric-block .xp-add-badge { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; font-weight: 700; color: #00ffaa; }
+
+/* ================= 9. PERSONAL BEST CARDS ================= */
+.up-personal-records-grid-layout { padding: 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.up-record-metric-card { background: rgba(1, 4, 10, 0.4); border: 1px dashed rgba(255,255,255,0.04); padding: 10px 14px; border-radius: 2px; }
+.up-rec-label { font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; color: #5c7890; font-weight: 700; display: block; }
+.up-rec-value { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; color: #00d2ff; margin: 2px 0; display: block; }
+.up-rec-meta-tag { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; color: #8fa5b8; display: block; }
+
+/* ================= EMBLEM PRESTIGE DRAWER INTERFACE ================= */
+.up-selector-backdrop-overlay {
+  position: fixed; inset: 0; background: rgba(0, 2, 5, 0.7); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end;
+}
+
+.up-selector-drawer-window {
+  width: 100%; background: #020710; border-top: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 12px 12px 0 0; padding: 20px 24px clamp(24px, 4vw, 40px) 24px; box-sizing: border-box;
+  max-height: 85vh; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 -15px 40px rgba(0,0,0,0.9);
+}
+
+.up-drawer-top-notch-bar { width: 40px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 0 auto; }
+.up-drawer-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 12px; }
+.up-drawer-header-row h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin: 0; font-weight: 900; color: #ffffff; }
+.up-drawer-header-row p { font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; color: #5c7890; margin: 2px 0 0 0; }
+.up-drawer-close-trigger-btn { background: transparent; border: none; color: #5c7890; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; }
+.up-drawer-close-trigger-btn:hover { color: #ff3b3b; }
+
+.up-emblem-cards-scrollable-mesh { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.up-emblem-tier-selection-card {
+  background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 12px 16px;
+  border-radius: 4px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; position: relative;
+}
+
+.up-emblem-tier-selection-card:not(.tier-locked-shielded):hover {
+  background: rgba(0, 210, 255, 0.03); border-color: rgba(0, 210, 255, 0.2);
+}
+
+.up-emblem-tier-selection-card.tier-selected-active {
+  background: rgba(189, 0, 255, 0.04); border-color: rgba(189, 0, 255, 0.3);
+}
+
+.up-tier-icon-vector-preview { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; width: 36px; text-align: center; }
+.up-tier-identity-text { flex: 1; display: flex; flex-direction: column; }
+.up-tier-title-line { display: flex; align-items: center; gap: 8px; }
+.up-tier-title-line h4 { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; margin: 0; color: #ffffff; }
+.up-tier-identity-text p { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; color: #8fa5b8; margin: 4px 0 0 0; }
+
+.active-tag-pill { font-family: 'Orbitron', sans-serif; font-size: 0.52rem; font-weight: 700; background: rgba(189,0,255,0.1); border: 1px solid #bd00ff; color: #bd00ff; padding: 1px 5px; border-radius: 2px; }
+.locked-tag-pill { font-family: 'Orbitron', sans-serif; font-size: 0.52rem; font-weight: 700; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); color: #5c7890; padding: 1px 5px; border-radius: 2px; }
+.up-tier-unlocked-status-bead { width: 4px; height: 4px; border-radius: 50%; }
+
+.tier-locked-shielded { opacity: 0.35; cursor: not-allowed; background: rgba(0,0,0,0.4); }
+
+/* ================= INTEGRATED DISPATCH RESPONSIVE SYSTEM ================= */
+@media (max-width: 1100px) {
+  .up-dashboard-columns-matrix { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .up-hero-grid-layout { flex-direction: column; text-align: center; gap: 14px; }
+  .up-rank-badge-row { justify-content: center; }
+  .up-xp-bar-numerical-labels { justify-content: center; gap: 12px; }
+  .up-achievements-hud-grid-mesh, .up-personal-records-grid-layout { grid-template-columns: 1fr; }
+  .up-timeline-linear-rail::before { left: 16px; }
+  .up-timeline-node-event { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .up-timeline-left-time-stamp { text-align: left; width: auto; margin-left: 32px; }
+  .up-timeline-center-node-bead { left: 13px; }
+}
