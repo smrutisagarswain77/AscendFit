@@ -1,0 +1,732 @@
+/* ==========================================================================
+   COMMAND NOTIFICATION STREAM FRAMEWORK STYLE ENGINE 
+   ========================================================================== */
+
+.nt-viewport-matrix-shell {
+  position: relative;
+  width: 100%;
+  height: 100vh;            /* Force an absolute window limit */
+  max-height: 100vh;
+  background-color: #02060c;
+  color: #ffffff;
+  overflow: hidden;         /* Prevent unwanted horizontal/vertical page bounces */
+  padding: 40px 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BACKGROUND UTILITIES & GEOMETRY WIRES */
+.nt-canvas-particle-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nt-perimeter-cyber-border {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  border: 1px solid rgba(0, 210, 255, 0.025);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* CENTRAL ARCHITECTURE GRID CONFIGURATIONS */
+.nt-central-layout-hub {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 40px;
+  width: 100%;
+  max-width: 1400px;
+  height: 100%;             /* Fills the padded viewport space */
+  overflow: hidden;
+}
+
+.nt-logs-primary-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;             /* Constrains container height */
+  overflow: hidden;
+}
+/* ==========================================================================
+   ADVANCED RETICLE CROSSHAIR EXIT MATRIX (MATCHES COMPONENT SPEC)
+   ========================================================================== */
+
+.nt-abort-hud-crosshair {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nt-crosshair-line {
+  position: absolute;
+  background: rgba(0, 210, 255, 0.12);
+  transition: all 0.30s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.line-horiz { width: 100vw; height: 1px; right: -40px; }
+.line-vert { height: 100vh; width: 1px; top: -40px; }
+
+.nt-crosshair-box {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nt-escape-vector-icon {
+  font-size: 1.15rem;
+  color: #70889b;
+  position: relative;
+  z-index: 5;
+  transition: all 0.3s ease;
+}
+
+.nt-escape-readout-string {
+  position: absolute;
+  bottom: -22px;
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #526879;
+  letter-spacing: 1.2px;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: all 0.2s ease;
+}
+
+/* Escape Hover Kinetic Trigger Maps */
+.nt-abort-hud-crosshair:hover .line-horiz { background: #ff0055; width: 120vw; box-shadow: 0 0 10px #ff0055; }
+.nt-abort-hud-crosshair:hover .line-vert { background: #ff0055; height: 120vh; box-shadow: 0 0 10px #ff0055; }
+.nt-abort-hud-crosshair:hover .nt-crosshair-box { border-color: #ff0055; transform: rotate(45deg); background: rgba(255, 0, 85, 0.04); }
+.nt-abort-hud-crosshair:hover .nt-escape-vector-icon { color: #ffffff; transform: scale(1.05); }
+.nt-abort-hud-crosshair:hover .nt-escape-readout-string { opacity: 1; transform: translateY(0); color: #ff0055; }
+
+/* ==========================================================================
+   MASTHEAD STREAM LAYOUT NODES
+   ========================================================================== */
+
+.nt-stream-header-deck {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+}
+
+.nt-branding-glitch-node {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nt-terminal-masthead-icon {
+  font-size: 1.8rem;
+  color: #00d2ff;
+  filter: drop-shadow(0 0 6px #00d2ff);
+}
+
+.nt-hud-subtext-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #526879;
+  letter-spacing: 1.5px;
+}
+
+.nt-page-headline {
+  font-family: 'Space Mono', monospace;
+  font-size: 2.0rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  background: linear-gradient(180deg, #ffffff 0%, #70889b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nt-header-actions-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.nt-count-badge-capsule {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+}
+
+.unread-color { color: #00d2ff; font-weight: 700; text-shadow: 0 0 8px rgba(0, 210, 255, 0.3); }
+.nt-badge-split { margin: 0 8px; color: rgba(255, 255, 255, 0.15); }
+.total-color { color: #70889b; }
+
+.nt-header-btn-cluster { display: flex; gap: 8px; }
+
+.nt-telemetry-action-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 14px;
+  border-radius: 4px;
+  color: #70889b;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nt-telemetry-action-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.nt-telemetry-action-btn.nt-danger-override:hover {
+  background: rgba(255, 0, 85, 0.08);
+  border-color: rgba(255, 0, 85, 0.25);
+  color: #ff0055;
+}
+
+/* ==========================================================================
+   DYNAMIC FILTER CHIPS RAIL 
+   ========================================================================== */
+
+.nt-filter-chips-rail {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.nt-filter-chips-rail::-webkit-scrollbar { height: 0px; }
+
+.nt-filter-node-chip {
+  position: relative;
+  background: rgba(4, 9, 14, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #70889b;
+  transition: all 0.2s ease;
+}
+
+.nt-chip-inner-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nt-filter-node-chip:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.nt-filter-node-chip.nt-chip-engaged {
+  background: rgba(0, 210, 255, 0.03);
+  border-color: rgba(0, 210, 255, 0.12);
+  color: #00d2ff;
+}
+
+.nt-chip-laser-underline {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #00d2ff;
+  box-shadow: 0 0 8px #00d2ff;
+}
+
+/* ==========================================================================
+   THE BUFFER SCROLLWAY & PREMIUM PRIORITY CARDS
+   ========================================================================== */
+
+.nt-timeline-scrollway {
+  flex: 1;                  /* Absorbs remaining available vertical space */
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-right: 12px;      /* Buffer zone against overlap layout boundaries */
+  overflow-y: auto;         /* Activates scrolling behavior safely */
+  overflow-x: hidden;
+}
+.nt-timeline-scrollway::-webkit-scrollbar {
+  width: 6px;
+}
+.nt-timeline-scrollway::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 4px;
+}
+.nt-timeline-scrollway::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+.nt-timeline-scrollway::-webkit-scrollbar-thumb:hover {
+  background: #00d2ff;     /* Accent color glow on track interaction */
+}
+
+.nt-timeline-quantum-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nt-timeline-horizontal-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nt-timeline-string-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #526879;
+  letter-spacing: 1.5px;
+}
+
+.nt-timeline-laser-run {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+}
+
+.nt-timeline-vertical-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* FUTURISTIC PREMIUM NOTIFICATION HOVER CARD */
+.nt-cyber-notification-card {
+  position: relative;
+  background: rgba(5, 11, 18, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  cursor: pointer;
+}
+
+.nt-card-laser-scanner {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.nt-priority-left-stripe {
+  width: 4px;
+  height: auto;
+  background: #70889b;
+  transition: width 0.2s ease;
+}
+
+.nt-card-inner-telemetry {
+  flex: 1;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* UPPER TELEMETRY NODE DATA */
+.nt-card-top-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nt-card-category-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nt-cat-vector-bracket { display: flex; align-items: center; font-size: 0.9rem; }
+
+.nt-cat-string-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.nt-card-timestamp-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #526879;
+}
+
+.nt-crosshair-icon-mini { font-size: 0.6rem; }
+
+/* CENTRAL CORE DATA TEXT FONTS */
+.nt-card-title-node {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+  transition: text-shadow 0.20s ease;
+}
+
+.nt-card-message-body {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: #70889b;
+  line-height: 1.45;
+}
+
+/* UNIQUE KINETIC PRIORITY CORRELATIONS & GLOWS */
+.priority-info .nt-priority-left-stripe { background: #00ffaa; }
+.priority-info .nt-card-category-block { color: #00ffaa; }
+.priority-info:hover { box-shadow: 0 0 20px rgba(0, 255, 170, 0.04); border-color: rgba(0, 255, 170, 0.14); }
+
+.priority-workout .nt-priority-left-stripe { background: #00d2ff; }
+.priority-workout .nt-card-category-block { color: #00d2ff; }
+.priority-workout:hover { box-shadow: 0 0 20px rgba(0, 210, 255, 0.04); border-color: rgba(0, 210, 255, 0.14); }
+
+.priority-ai .nt-priority-left-stripe { background: #bd00ff; }
+.priority-ai .nt-card-category-block { color: #bd00ff; }
+.priority-ai:hover { box-shadow: 0 0 20px rgba(189, 0, 255, 0.04); border-color: rgba(189, 0, 255, 0.14); }
+
+.priority-achievement .nt-priority-left-stripe { background: #ffb700; }
+.priority-achievement .nt-card-category-block { color: #ffb700; }
+.priority-achievement:hover { box-shadow: 0 0 20px rgba(255, 183, 0, 0.04); border-color: rgba(255, 183, 0, 0.14); }
+
+.priority-important .nt-priority-left-stripe { background: #ff0055; }
+.priority-important .nt-card-category-block { color: #ff0055; }
+.priority-important:hover { box-shadow: 0 0 20px rgba(255, 0, 85, 0.05); border-color: rgba(255, 0, 85, 0.16); }
+
+/* READ/UNREAD FILTER DECAY COMPILERS */
+.state-read-dim { opacity: 0.5; }
+.state-read-dim:hover { opacity: 0.95; }
+
+.nt-card-quick-read-toggle {
+  background: transparent; border: none; cursor: pointer;
+  padding: 0 20px; display: flex; align-items: center; justify-content: center;
+}
+
+.nt-status-bead-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.state-unread-pulse .nt-status-bead-dot {
+  background: #00d2ff;
+  box-shadow: 0 0 8px #00d2ff;
+}
+
+/* INTERACTIVE MACRO HARDWARE TRIGGER BUTTONS */
+.nt-card-action-dock-bay { margin-top: 6px; }
+
+.nt-macro-trigger-action-btn {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  overflow: hidden; transition: all 0.2s ease;
+}
+
+.nt-macro-btn-txt {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem; font-weight: 700; color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.nt-macro-trigger-action-btn:hover { background: #ffffff; border-color: #ffffff; }
+.nt-macro-trigger-action-btn:hover .nt-macro-btn-txt { color: #02060c; }
+
+.nt-static-meta-pill {
+  display: inline-block; background: rgba(0, 210, 255, 0.05);
+  border: 1px solid rgba(0, 210, 255, 0.12); padding: 4px 10px; border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #00d2ff; font-weight: 700;
+}
+
+/* ==========================================================================
+   AUXILIARY AUX PERIMETER SYSTEM SIDEBARS
+   ========================================================================== */
+
+.nt-auxiliary-metric-sidebar {
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.nt-hud-aux-card {
+  position: relative; background: rgba(4, 9, 14, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 4px; padding: 24px;
+}
+.nt-hud-aux-card.system-feed-override {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nt-aux-corner-bracket {
+  position: absolute; top: 0; right: 0; width: 10px; height: 10px;
+  border-top: 2px solid rgba(255, 255, 255, 0.08); border-right: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.nt-aux-header-strip {
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; margin-bottom: 16px;
+}
+
+.nt-aux-header-strip h5 {
+  font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; color: #70889b; letter-spacing: 1px;
+}
+
+.nt-aux-metrics-stack { display: flex; flex-direction: column; gap: 12px; }
+
+.nt-aux-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'Space Mono', monospace; font-size: 0.75rem;
+}
+
+.nt-aux-row .lbl { color: #526879; }
+.nt-aux-row .val { color: #ffffff; font-weight: 700; }
+
+.color-amber { color: #ffb700 !important; }
+.color-gold { color: #ffb700 !important; }
+.color-purple { color: #bd00ff !important; }
+.color-blue { color: #00d2ff !important; }
+
+/* REALSIGNAL TERMINAL BUFFER OUTPUT FRAME */
+.nt-terminal-logs-screen {
+  background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 4px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+  font-family: 'Space Mono', monospace; font-size: 0.68rem; min-height: 150px;overflow-y: auto;flex: 1;
+}
+
+.nt-live-bead-pulse-glow {
+  width: 6px; height: 6px; border-radius: 50%; background: #00ffaa;
+  animation: ntRadarPulse 2s infinite ease-in-out;
+}
+
+.nt-terminal-log-line { display: flex; gap: 10px; line-height: 1.4; }
+.nt-term-time { color: #526879; }
+.nt-term-string { color: #00ffaa; }
+.nt-terminal-listening-row { color: #70889b; margin-top: auto; }
+
+.nt-terminal-cursor {
+  animation: ntCursorBlink 1s infinite steps(2); color: #00d2ff;
+}
+
+/* TERMINAL EMPTY BUFFER DESIGN SIGNALS */
+.nt-empty-terminal-card {
+  text-align: center; padding: 60px 20px;
+  background: rgba(5, 11, 18, 0.15); border: 1px dashed rgba(255, 255, 255, 0.03); border-radius: 4px;
+}
+
+.nt-radar-ping-vector {
+  font-size: 1.8rem; color: #526879; margin-bottom: 12px;
+  animation: ntRadarPulse 2.5s infinite ease-in-out;
+}
+
+.nt-empty-terminal-card h4 { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #70889b; font-weight: 700; margin-bottom: 4px; }
+.nt-empty-terminal-card p { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #526879; max-width: 380px; margin: 0 auto; }
+
+/* ==========================================================================
+   ANIMATION KEYFRAMES SCHEMATICS
+   ========================================================================== */
+
+@keyframes ntRadarPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.04); filter: drop-shadow(0 0 4px currentColor); }
+}
+
+@keyframes ntCursorBlink {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ==========================================================================
+   RESPONSIVE DATA LAYOUT RESPONSIVENESS MATRIX
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  .nt-central-layout-hub { grid-template-columns: 1fr; gap: 30px; }
+  .nt-viewport-matrix-shell { padding: 40px 24px; }
+  .nt-abort-hud-crosshair { top: 20px; right: 20px; }
+}
+
+@media (max-width: 680px) {
+  .nt-stream-header-deck { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .nt-header-actions-deck { align-items: flex-start; width: 100%; }
+  .nt-header-btn-cluster { width: 100%; }
+  .nt-telemetry-action-btn { flex: 1; justify-content: center; }
+
+}
+@media (max-width: 1080px) {
+  .nt-viewport-matrix-shell {
+    height: auto;
+    max-height: none;
+    overflow-y: auto;       /* Hand over full scrolling power to the window layout */
+    padding: 80px 24px 40px;
+  }
+  .nt-central-layout-hub {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+  .nt-logs-primary-viewport {
+    height: auto;
+    overflow: visible;
+  }
+  .nt-timeline-scrollway {
+    height: auto;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+  .nt-auxiliary-metric-sidebar {
+    height: auto;
+    overflow: visible;
+  }
+}
+/* ==========================================================================
+   ADVANCED HOVER ANIMATIONS & KINETIC SCANNERS
+   ========================================================================== */
+
+/* Base positioning adjustments for the card */
+.nt-cyber-notification-card {
+  position: relative;
+  background: rgba(5, 11, 18, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 1. Holographic Matrix Grid Backdrop Effect */
+.nt-card-matrix-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Creates a futuristic dot-matrix grid layout */
+  background-image: radial-gradient(rgba(0, 210, 255, 0.15) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.95);
+}
+
+/* 2. Cyber Laser Line Sweeper */
+.nt-card-laser-scanner {
+  position: absolute;
+  top: 0;
+  left: -20%;
+  width: 15%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 210, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ==========================================================================
+   KINETIC HOVER TRIGGERS
+   ========================================================================== */
+
+/* Trigger Scanner Sweep and Grid Reveal on hover */
+.nt-cyber-notification-card:hover .nt-card-laser-scanner {
+  animation: ntCyberSweep 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.nt-cyber-notification-card:hover .nt-card-matrix-grid-overlay {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+}
+
+/* Expand left color wire strip into a subtle tech notch layout */
+.nt-cyber-notification-card:hover .nt-priority-left-stripe {
+  width: 8px;
+}
+
+/* Make font headlines react crisply with glowing filters on interaction */
+.nt-cyber-notification-card:hover .nt-card-title-node {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+/* Match colors dynamically for individual priority sweeps */
+.nt-cyber-notification-card.priority-important:hover .nt-card-laser-scanner {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 0, 85, 0.3) 50%, transparent 100%);
+}
+.nt-cyber-notification-card.priority-achievement:hover .nt-card-laser-scanner {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 183, 0, 0.3) 50%, transparent 100%);
+}
+.nt-cyber-notification-card.priority-ai:hover .nt-card-laser-scanner {
+  background: linear-gradient(90deg, transparent 0%, rgba(189, 0, 255, 0.3) 50%, transparent 100%);
+}
+.nt-cyber-notification-card.priority-info:hover .nt-card-laser-scanner {
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 170, 0.3) 50%, transparent 100%);
+}
+
+/* ==========================================================================
+   ANIMATION TIMELINES
+   ========================================================================== */
+@keyframes ntCyberSweep {
+  0% {
+    left: -20%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
