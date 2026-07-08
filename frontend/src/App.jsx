@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Workouts from "./pages/Workouts";
 import Exercises from "./pages/Exercises";
 import Profile from "./pages/Profile";
-
+import Settings from "./pages/Settings";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -22,6 +22,7 @@ function AnimatedRoutes() {
         <Route path="/workouts" element={<Workouts />} />
         <Route path="/exercises" element={<Exercises />} />
         <Route path="/profile"  element={<Profile />} />
+        <Route path="/settings"  element={<Settings />} />
       </Routes>
     </AnimatePresence>
   );
