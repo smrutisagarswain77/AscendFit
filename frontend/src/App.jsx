@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotificationCenter from "./pages/Notification";
 import AICoach from "./pages/AICoach";
+import ActiveWorkout from "./pages/AcitveWorkout";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -27,6 +28,8 @@ function AnimatedRoutes() {
         <Route path="/settings"  element={<Settings />} />
         <Route path="/notification"  element={<NotificationCenter />} />
         <Route path="/ai-coach"  element={<AICoach/>} />
+        <Route path="/active-workout"  element={<ActiveWorkout/>} />
+        
 
       </Routes>
     </AnimatePresence>

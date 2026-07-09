@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiBell, FiUser, FiActivity, FiTerminal, FiShield } from "react-icons/fi";
 import "../styles/Header.css";
 
 const Header = ({ title }) => {
+  const navigate = useNavigate();
   const [systemTime, setSystemTime] = useState("00:00:00");
   const [msCount, setMsCount] = useState("000");
   const [showNotifications, setShowNotifications] = useState(false);
@@ -57,7 +59,7 @@ const Header = ({ title }) => {
         <div className="hd-interactive-panel-anchor">
           <button 
             className={`hd-icon-trigger-btn ${showNotifications ? "hd-panel-active" : ""}`}
-            onClick={() => { setShowNotifications(!showNotifications); setShowProfilePanel(false); }}
+            onClick={() => { navigate("/notification") }}
           >
             <FiBell className="hd-icon-layer" />
             <span className="hd-alert-badge-ping" />
@@ -97,7 +99,7 @@ const Header = ({ title }) => {
         <div className="hd-interactive-panel-anchor">
           <button 
             className={`hd-profile-trigger-btn ${showProfilePanel ? "hd-panel-active" : ""}`}
-            onClick={() => { setShowProfilePanel(!showProfilePanel); setShowNotifications(false); }}
+            onClick={() => { navigate("/profile") }}
           >
             <div className="hd-avatar-frame">
               <FiUser />

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiGrid, 
@@ -11,6 +12,8 @@ import {
 import "../styles/Sidebar.css";
 
 const Sidebar = ({ activeTab, setActiveTab, isMinimized, setIsMinimized, onLogout }) => {
+  const navigate = useNavigate();
+
   const navigationFeatures = [
     { id: "dashboard", label: "Dashboard", icon: <FiGrid /> },
     { id: "workouts", label: "Workouts", icon: <FiActivity /> },
@@ -114,7 +117,10 @@ const Sidebar = ({ activeTab, setActiveTab, isMinimized, setIsMinimized, onLogou
             <button
               key={item.id}
               className={`sb-nav-item-link ${isActive ? "sb-active-node" : ""} ${isMinimized ? "sb-item-squeezed" : ""}`}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                setActiveTab(item.id);
+                navigate(`/${item.id}`);
+              }}
             >
               {/* RE-ACTIVE CELL BACKGROUND SHELL */}
               <div className="sb-node-hover-bg" />
