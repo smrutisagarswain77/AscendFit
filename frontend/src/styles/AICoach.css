@@ -1,0 +1,460 @@
+/* ==========================================================================
+   AI COACH COGNITIVE CORE SYSTEM STYLE SCHEMATICS
+   ========================================================================== */
+
+/* BACKGROUND CANVAS MATRIX BACKPLANE */
+.ai-quantum-canvas-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* FIXED WORKSPACE AREA TO PREVENT BOUNCING */
+.db-workspace-axis {
+  height: 100vh;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* WORKSPACE GRID SCHEMATICS WITH VIEWPORT CALC BOUNDS */
+.ai-dashboard-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 30px;
+  margin-top: 25px;
+  height: calc(100vh - 140px); 
+  overflow-y: auto;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+.ai-dashboard-grid-layout::-webkit-scrollbar {
+  width: 6px;
+}
+.ai-dashboard-grid-layout::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.ai-left-column-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+  min-height: 0; 
+  overflow: hidden; /* Lock column axis layout container to avoid document shifting */
+}
+
+.ai-right-column-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: max-content;
+}
+
+/* ==========================================================================
+   LEFT COLUMN STYLES: IDENTITY HEADER & CHAT TERMINAL
+   ========================================================================== */
+
+.ai-identity-hero-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(14, 7, 24, 0.5) 0%, rgba(5, 11, 20, 0.4) 100%);
+  border: 1px solid rgba(189, 0, 255, 0.15);
+  box-shadow: 0 0 25px rgba(189, 0, 255, 0.04);
+  border-radius: 6px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ai-glitch-scanner-wire {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.1), transparent);
+  transform: skewX(-20deg);
+  animation: aiGlitchScan 4.5s infinite ease-in-out;
+}
+
+.ai-avatar-core-wrapper {
+  position: relative;
+  width: 56px; height: 56px;
+}
+
+.ai-avatar-pulse-ring {
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(189, 0, 255, 0.4);
+  animation: aiAvatarPulse 2s infinite ease-in-out;
+}
+
+.ai-avatar-icon-housing {
+  width: 100%; height: 100%;
+  background: rgba(189, 0, 255, 0.12);
+  border: 1px solid #bd00ff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #bd00ff; font-size: 1.6rem;
+  box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
+}
+
+.ai-identity-readout .ai-online-status-strip {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+
+.status-bead-pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: #00ffaa;
+  box-shadow: 0 0 8px #00ffaa;
+}
+
+.status-string {
+  font-family: 'Space Mono', monospace; font-size: 0.65rem; font-weight: 700; color: #00ffaa; letter-spacing: 1.5px;
+}
+
+.ai-identity-readout h3 {
+  font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 900; color: #ffffff; letter-spacing: -0.5px; margin: 0;
+}
+
+.ai-identity-readout p {
+  font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #70889b; margin: 2px 0 0;
+}
+
+/* TERMINAL CHAT CORE BASELINE CONFIGURATION */
+.ai-chat-terminal-card {
+  background: rgba(5, 11, 18, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  display: flex; 
+  flex-direction: column;
+  flex: 1;                 
+  min-height: 350px;       
+  overflow: hidden;
+}
+
+/* ISOLATED INTERNAL CHAT TRACK SCROLLBARS */
+.ai-terminal-inner-scroll {
+  flex: 1; 
+  padding: 24px;
+  overflow-y: auto; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px;
+}
+
+.ai-terminal-inner-scroll::-webkit-scrollbar { width: 4px; }
+.ai-terminal-inner-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 4px; }
+
+.chat-message-bubble-row {
+  display: flex; gap: 16px; max-width: 85%; position: relative;
+}
+
+.row-ai { align-self: flex-start; }
+.row-user { align-self: flex-end; flex-direction: row-reverse; max-width: 75%; }
+
+.chat-avatar-token {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(189, 0, 255, 0.08); border: 1px solid rgba(189, 0, 255, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  color: #bd00ff; font-size: 1rem; flex-shrink: 0;
+}
+
+.chat-avatar-token.running-pulse {
+  animation: aiAvatarPulse 1.5s infinite ease-in-out;
+}
+
+.chat-bubble-payload {
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.chat-bubble-metadata {
+  display: flex; align-items: center; gap: 10px; font-family: 'Space Mono', monospace; font-size: 0.65rem;
+}
+
+.row-ai .sender-tag { color: #bd00ff; font-weight: 700; }
+.row-user .sender-tag { color: #00d2ff; font-weight: 700; }
+.time-tag { color: #526879; }
+
+.chat-bubble-text {
+  font-family: 'Space Mono', monospace; font-size: 0.85rem; line-height: 1.5; padding: 14px 18px; border-radius: 6px; margin: 0;
+}
+
+.row-ai .chat-bubble-text {
+  background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.04); color: #e2e8f0;
+}
+
+.row-user .chat-bubble-text {
+  background: rgba(0, 210, 255, 0.03); border: 1px solid rgba(0, 210, 255, 0.15); color: #ffffff;
+}
+
+/* INTERACTIVE QUICK SUGGESTIONS CHIPS */
+.chat-inline-suggestions-rail {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+}
+
+.chat-inline-chip-node {
+  background: rgba(189, 0, 255, 0.04); border: 1px solid rgba(189, 0, 255, 0.15);
+  padding: 6px 12px; border-radius: 4px; color: #bd00ff;
+  font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chat-inline-chip-node:hover {
+  background: #bd00ff; color: #ffffff; box-shadow: 0 0 10px rgba(189, 0, 255, 0.4);
+}
+
+/* TYPING INDICATOR DECK */
+.typing-container {
+  background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 6px;
+}
+
+.hud-sub-bracket-tag {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem; color: #526879; display: block; margin-bottom: 6px;
+}
+
+.ai-typing-indicator-dots {
+  display: flex; gap: 4px; align-items: center;
+}
+
+.ai-typing-indicator-dots .dot {
+  width: 6px; height: 6px; background: #bd00ff; border-radius: 50%; opacity: 0.3;
+  animation: aiDotBlink 1.4s infinite both;
+}
+
+.ai-typing-indicator-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-indicator-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ATTACHED CONTROL INPUT BOARD */
+.ai-macro-chips-input-deck {
+  border-top: 1px solid rgba(255,255,255,0.04); background: rgba(3, 7, 12, 0.5); padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 14px; flex-shrink: 0;
+}
+
+.macro-chip-scrollway {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
+}
+
+.macro-chip-scrollway::-webkit-scrollbar { height: 4px; }
+.macro-chip-scrollway::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 2px; }
+
+.ai-input-macro-node {
+  flex-shrink: 0; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  padding: 8px 14px; border-radius: 4px; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; transition: all 0.2s ease;
+}
+
+.ai-input-macro-node .macro-title {
+  font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; color: #ffffff;
+}
+
+.ai-input-macro-node .macro-desc {
+  font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #526879; margin-top: 2px;
+}
+
+.ai-input-macro-node:hover {
+  background: rgba(0, 210, 255, 0.03); border-color: rgba(0, 210, 255, 0.18); transform: translateY(-1px);
+}
+
+.ai-terminal-input-form {
+  display: flex; gap: 12px; align-items: center;
+}
+
+.ai-input-field-enclosure {
+  flex: 1; position: relative;
+}
+
+.db-viewport-wrapper input[type="text"] {
+  width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.04);
+  padding: 14px 18px; border-radius: 4px; color: #ffffff;
+  font-family: 'Space Mono', monospace; font-size: 0.8rem; box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.db-viewport-wrapper input[type="text"]:focus {
+  outline: none; border-color: rgba(189, 0, 255, 0.3); background: rgba(0,0,0,0.5);
+}
+
+.input-field-laser-trim {
+  position: absolute; bottom: 0; left: 50%; width: 0; height: 1px; background: #bd00ff;
+  transition: all 0.25s ease;
+}
+
+.db-viewport-wrapper input[type="text"]:focus + .input-field-laser-trim {
+  width: 100%; left: 0; box-shadow: 0 0 6px #bd00ff;
+}
+
+.ai-terminal-submit-btn {
+  width: 48px; height: 44px; border-radius: 4px; background: rgba(189, 0, 255, 0.1);
+  border: 1px solid rgba(189, 0, 255, 0.25); color: #bd00ff; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ai-terminal-submit-btn:hover {
+  background: #bd00ff; color: #ffffff; box-shadow: 0 0 12px rgba(189, 0, 255, 0.4);
+}
+
+/* ==========================================================================
+   RIGHT COLUMN AUXILIARY INTERFACE METRIC PANELS
+   ========================================================================== */
+
+.ai-telemetry-hud-card {
+  position: relative; background: rgba(4, 9, 14, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 4px; padding: 22px;
+}
+
+.hud-card-corner-notch {
+  position: absolute; width: 8px; height: 8px;
+}
+.hud-card-corner-notch.top-left { top: 0; left: 0; border-top: 2px solid rgba(255,255,255,0.1); border-left: 2px solid rgba(255,255,255,0.1); }
+.hud-card-corner-notch.bottom-right { bottom: 0; right: 0; border-bottom: 2px solid rgba(255,255,255,0.1); border-right: 2px solid rgba(255,255,255,0.1); }
+
+.hud-card-header {
+  display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding-bottom: 12px; margin-bottom: 16px; color: #70889b;
+}
+
+.hud-card-header h5 {
+  font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; margin: 0;
+}
+
+.text-purple-glow { color: #bd00ff !important; }
+.alert-layout-border { border-color: rgba(189, 0, 255, 0.15); }
+
+.hud-telemetry-grid-metrics {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+
+.metric-box {
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.02); padding: 12px 14px; border-radius: 4px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.metric-box.full-span-row { grid-column: 1 / -1; }
+.metric-box .lbl { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #526879; font-weight: 700; }
+.metric-box .val { font-family: 'Space Mono', monospace; font-size: 1.2rem; font-weight: 900; }
+.metric-glow-green { color: #00ffaa; text-shadow: 0 0 8px rgba(0, 255, 170, 0.2); }
+.metric-glow-blue { color: #00d2ff; text-shadow: 0 0 8px rgba(0, 210, 255, 0.2); }
+.metric-box .val .sub-unit { font-size: 0.65rem; color: #70889b; font-weight: 400; margin-left: 4px; }
+
+.proactive-recommendation-body { display: flex; flex-direction: column; gap: 10px; }
+.rec-badge-line { display: flex; justify-content: space-between; align-items: center; }
+.rec-title { font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: 700; color: #ffffff; }
+.rec-time { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #bd00ff; display: flex; align-items: center; gap: 4px; }
+.rec-reason-statement { font-family: 'Space Mono', monospace; font-size: 0.74rem; color: #70889b; line-height: 1.45; margin: 0; }
+.reason-label { color: #526879; font-weight: 700; margin-right: 4px; }
+
+/* WORKOUT MATRIX GENERATOR CORE */
+.generative-form-controls { display: flex; flex-direction: column; gap: 14px; }
+.form-field-group { display: flex; flex-direction: column; gap: 6px; }
+.form-field-group label { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #526879; font-weight: 700; }
+.form-field-dual-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.db-viewport-wrapper select {
+  width: 100%; background: rgba(5, 11, 18, 0.8); border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 12px; border-radius: 4px; color: #ffffff;
+  font-family: 'Space Mono', monospace; font-size: 0.74rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.db-viewport-wrapper select:focus { outline: none; border-color: rgba(0, 210, 255, 0.3); }
+
+.generative-trigger-action-btn {
+  margin-top: 6px; background: rgba(0, 210, 255, 0.08); border: 1px solid rgba(0, 210, 255, 0.25);
+  padding: 12px; border-radius: 4px; color: #00d2ff; font-family: 'Space Mono', monospace;
+  font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px; transition: all 0.2s ease;
+}
+.generative-trigger-action-btn:hover { background: #00d2ff; color: #02060c; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+.spinning-vector-loader { animation: aiLoaderSpin 1s infinite linear; }
+
+/* BLUEPRINT OUTPUT INTERFACE */
+.generated-blueprint-payload-card {
+  margin-top: 16px; background: rgba(0,0,0,0.3); border: 1px dashed rgba(0, 210, 255, 0.2);
+  border-radius: 4px; padding: 14px; overflow: hidden;
+}
+.blueprint-header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 8px; margin-bottom: 10px; }
+.blueprint-header h6 { font-family: 'Space Mono', monospace; font-size: 0.78rem; font-weight: 700; color: #00d2ff; margin: 0; }
+.blueprint-header span { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #526879; }
+.blueprint-exercises-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.blueprint-exercise-row { display: flex; flex-direction: column; background: rgba(255,255,255,0.01); padding: 8px; border-radius: 2px; }
+.blueprint-exercise-row .ex-name { font-family: 'Space Mono', monospace; font-size: 0.74rem; color: #ffffff; font-weight: 700; }
+.ex-meta-specs { display: flex; justify-content: space-between; font-family: 'Space Mono', monospace; font-size: 0.62rem; color: #70889b; margin-top: 2px; }
+.ex-load { color: #ffb700; }
+
+.blueprint-add-to-workouts-btn {
+  width: 100%; background: #ffffff; border: 1px solid #ffffff; padding: 10px;
+  border-radius: 4px; color: #02060c; font-family: 'Space Mono', monospace; font-size: 0.7rem;
+  font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s ease;
+}
+.blueprint-add-to-workouts-btn:hover { background: transparent; color: #ffffff; }
+
+/* HISTORICAL MATRIX TELEMETRY DATA */
+.progress-analysis-readout-rows { display: flex; flex-direction: column; gap: 8px; }
+.diagnostic-row-item { display: flex; justify-content: space-between; align-items: center; font-family: 'Space Mono', monospace; font-size: 0.72rem; }
+.diagnostic-row-item .lbl { color: #526879; }
+.diagnostic-row-item .val { color: #ffffff; font-weight: 700; }
+.text-green { color: #00ffaa !important; }
+.color-gold { color: #ffb700 !important; }
+.diagnostic-summary-paragraph { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #70889b; line-height: 1.45; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 10px; margin: 4px 0 0; }
+.insight-tag { color: #526879; font-weight: 700; display: block; margin-bottom: 2px; }
+
+.memory-card-payload { display: flex; flex-direction: column; gap: 14px; }
+.motivation-alert-text { font-family: 'Space Mono', monospace; font-size: 0.74rem; color: #ffffff; line-height: 1.5; margin: 0; }
+.highlight-amber { color: #ffb700; font-weight: 700; }
+.highlight-cyan { color: #00d2ff; font-weight: 700; }
+.memory-recall-historical-footer-pills { display: flex; flex-direction: column; gap: 10px; }
+.recall-historical-pill { background: rgba(0,0,0,0.15); border-left: 2px solid #526879; padding: 8px 12px; }
+.recall-historical-pill:nth-child(2) { border-left-color: #bd00ff; background: rgba(189, 0, 255, 0.02); }
+.recall-historical-pill .pill-tag { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: #526879; font-weight: 700; display: block; margin-bottom: 2px; }
+.recall-historical-pill p { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #70889b; margin: 0; line-height: 1.35; }
+
+/* ==========================================================================
+   ANIMATION KEYFRAMES
+   ========================================================================== */
+
+@keyframes aiGlitchScan {
+  0% { left: -100%; }
+  35%, 100% { left: 150%; }
+}
+@keyframes aiAvatarPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+@keyframes aiDotBlink {
+  0%, 100% { opacity: 0.2; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes aiLoaderSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 1250px) {
+  .ai-dashboard-grid-layout { 
+    grid-template-columns: 1fr; 
+    height: auto; 
+    overflow-y: visible;
+  }
+  .ai-chat-terminal-card { 
+    height: 500px; 
+    flex: none; 
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-identity-hero-card { flex-direction: column; text-align: center; padding: 20px; }
+  .ai-online-status-strip { justify-content: center; }
+  .chat-message-bubble-row { max-width: 95%; }
+  .form-field-dual-row { grid-template-columns: 1fr; gap: 14px; }
+}
