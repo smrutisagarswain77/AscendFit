@@ -20,8 +20,8 @@ const Settings = () => {
 
   // --- STATE LAYER: CONFIGURATION MATRIX DATA ---
   const [accountData, setAccountData] = useState({
-    username: "Alok",
-    email: "alok.operator@ascendfit.io",
+    username: "Liku",
+    email: "liku.operator@ascendfit.io",
     bio: "Biometric systems tuned to absolute high-performance output vectors."
   });
 

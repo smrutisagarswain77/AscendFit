@@ -583,7 +583,7 @@
   padding: 24px; border-radius: 4px; margin-bottom: 24px;
 }
 .victory-xp-transaction-hero-badge .xp-numerical-display {
-  font-size: 3rem; font-weight: 900; color: #00ffaa; text-shadow: 0 0 20px rgba(0, 255, 170, 0.3); line-height: 1;
+  font-size: 2.6rem; font-weight: 900; color: #00ffaa; text-shadow: 0 0 20px rgba(0, 255, 170, 0.3); line-height: 1;
 }
 .victory-xp-transaction-hero-badge .xp-numerical-display .unit-label { font-size: 1.2rem; font-weight: 400; margin-left: 2px; }
 .xp-transaction-status-tag { font-size: 0.68rem; color: #70889b; margin-top: 8px; font-weight: 700; letter-spacing: 0.5px; }
@@ -607,7 +607,7 @@
   border-top: 1px solid rgba(255,255,255,0.04); padding-top: 24px; margin-bottom: 36px;
 }
 .summary-data-box {
-  display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 4px;
+  display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 4px;color: #00ffaa;
 }
 .summary-data-box .lbl { font-size: 0.52rem; color: #526879; font-weight: 700; }
 .summary-data-box .val { font-size: 1rem; font-weight: 900; }
@@ -991,7 +991,7 @@
 .set-interactive-node-bubble.state-checked {
   background: rgba(0, 255, 170, 0.06); border-color: rgba(0, 255, 170, 0.3);
 }
-.set-interactive-node-bubble.state-checked .set-status-sub-indicator { color: #00ffaa; font-weight: 700; }
+.set-interactive-node-bubble.state-checked .set-status-sub-indicator { color: #00d2ff; font-weight: 700; box-shadow: 0 4px 20px rgba(0, 210, 255, 0.25)}
 
 /* KINETIC STEPPER CONTROLLER ROWS */
 .kinetic-stepper-control-matrix {
@@ -1205,8 +1205,8 @@
 .mission-complete-celebration-chassis-card {
   position: relative; background: radial-gradient(circle at top, #0c1827 0%, #050b12 100%);
   border: 1px solid rgba(255, 183, 0, 0.2); box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(255, 183, 0, 0.03);
-  border-radius: 8px; padding: 48px; max-width: 620px; width: 100%; text-align: center;
-  overflow: hidden; transform-style: preserve-3d; perspective: 1000px;
+  border-radius: 8px; padding: 32px; max-width: 620px; width: 100%; text-align: center;
+  overflow-y: auto; transform-style: preserve-3d; perspective: 1000px;max-height: 90vh;
 }
 .victory-fireworks-laser-trim {
   position: absolute; top: 0; left: 0; right: 0; height: 3px;
@@ -1221,11 +1221,11 @@
 }
 
 .victory-glitch-headline { font-size: 2.2rem; font-weight: 900; margin: 0 0 4px 0; color: #ffb700; letter-spacing: 2px; }
-.sub-victory-bracket-tag { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #526879; font-weight: 700; letter-spacing: 1.5px; display: block; margin-bottom: 32px; }
+.sub-victory-bracket-tag { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #526879; font-weight: 700; letter-spacing: 1.5px; display: block; margin-bottom: 20px; }
 
 .victory-xp-transaction-hero-badge {
   background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.03);
-  padding: 24px; border-radius: 4px; margin-bottom: 24px;
+  padding: 18px; border-radius: 4px; margin-bottom: 18px;
 }
 .victory-xp-transaction-hero-badge .xp-numerical-display {
   font-size: 3rem; font-weight: 900; color: #00ffaa; text-shadow: 0 0 20px rgba(0, 255, 170, 0.3); line-height: 1;
@@ -1233,10 +1233,10 @@
 .victory-xp-transaction-hero-badge .xp-numerical-display .unit-label { font-size: 1.2rem; font-weight: 400; margin-left: 2px; }
 .xp-transaction-status-tag { font-size: 0.68rem; color: #70889b; margin-top: 8px; font-weight: 700; letter-spacing: 0.5px; }
 
-.unlocked-achievements-grid-flex { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.unlocked-achievements-grid-flex { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
 .achievement-unlocked-row-item {
   background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03);
-  border-left: 3px solid #ffffff; padding: 14px 18px; border-radius: 0 4px 4px 0;
+  border-left: 3px solid #ffffff; padding: 10px 16px; border-radius: 0 4px 4px 0;
   display: flex; align-items: center; gap: 16px; text-align: left;
 }
 .achievement-unlocked-row-item.glow-border-gold { border-left-color: #ffb700; background: rgba(255, 183, 0, 0.01); }
@@ -1249,17 +1249,17 @@
 
 .final-mission-telemetry-summary-table {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-  border-top: 1px solid rgba(255,255,255,0.04); padding-top: 24px; margin-bottom: 36px;
+  border-top: 1px solid rgba(255,255,255,0.04); padding-top: 18px; margin-bottom: 24px;
 }
 .summary-data-box {
-  display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 4px;
+  display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px;
 }
 .summary-data-box .lbl { font-size: 0.52rem; color: #526879; font-weight: 700; }
 .summary-data-box .val { font-size: 1rem; font-weight: 900; }
 
 .close-celebration-screen-and-commit-data-btn {
   width: 100%; background: linear-gradient(90deg, #ffb700, #f59e0b); color: #03070d;
-  border: none; padding: 18px; border-radius: 4px; font-size: 0.85rem; font-weight: 900;
+  border: none; padding: 15px; border-radius: 4px; font-size: 0.85rem; font-weight: 900;
   cursor: pointer; box-shadow: 0 4px 25px rgba(255, 183, 0, 0.25);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }

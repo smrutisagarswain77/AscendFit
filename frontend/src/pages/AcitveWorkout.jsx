@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -74,8 +75,10 @@ const AI_COACH_TIPS = [
   "Focus on the eccentric cadence. Control the descent to activate deep fiber recruitment."
 ];
 
-const ActiveWorkout = ({ onExit }) => {
+const ActiveWorkout = () => {
   // Core Interface Lifecycle States
+  const navigate = useNavigate();
+
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -471,7 +474,7 @@ const ActiveWorkout = ({ onExit }) => {
                       >
                         <span className="set-label">SET {idx + 1}</span>
                         <span className="set-status-sub-indicator">
-                          {completed ? "✔" : "○"}
+                          {completed ? "●" : "○"}
                         </span>
                       </button>
                     ))}
@@ -669,7 +672,7 @@ const ActiveWorkout = ({ onExit }) => {
                   <button className="pause-action-btn-node font-monospace" onClick={() => { setElapsedTime(0); setEarnedXp(0); setIsPaused(false); }}>
                     RESTART MISSION FROM ENTRY BASELINE
                   </button>
-                  <button className="pause-action-btn-node exit-danger-node font-monospace" onClick={onExit}>
+                  <button className="pause-action-btn-node exit-danger-node font-monospace" onClick={()=>navigate("/workouts")}>
                     ABORT MISSION AND PURGE DATA STACK
                   </button>
                 </div>
@@ -748,7 +751,7 @@ const ActiveWorkout = ({ onExit }) => {
 
                 <button 
                   className="close-celebration-screen-and-commit-data-btn font-monospace"
-                  onClick={onExit}
+                  onClick={()=> navigate("/workouts")}
                 >
                   COMMIT DATA MATRIX & REFRESH REEVALUATION CORE
                 </button>

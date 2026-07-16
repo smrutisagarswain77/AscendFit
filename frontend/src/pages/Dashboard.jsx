@@ -293,7 +293,7 @@ const Dashboard = () => {
                 <span className="db-streak-digit-glow text-cyan">72<span className="db-streak-lbl-sub">BPM</span></span>
               </div>
               <div className="db-progress-sub-box">
-                <span className="db-box-lbl">Calories</span>
+                <span className="db-box-lbl">Calories Burn</span>
                 <span className="db-streak-digit-glow text-purple">640<span className="db-streak-lbl-sub">KCAL</span></span>
               </div>
               <div className="db-progress-sub-box">

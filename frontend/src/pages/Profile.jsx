@@ -29,7 +29,7 @@ const Profile = () => {
   const avatarCanvasRef = useRef(null);
   
   const [userProfile, setUserProfile] = useState({
-    username: "Alok",
+    username: "Liku",
     bio: "Biometric systems tuned to absolute high-performance output vectors. Overloading routine parameters daily.",
     height: "182 cm",
     weight: "78.5 kg",
