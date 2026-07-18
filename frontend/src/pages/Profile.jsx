@@ -7,6 +7,9 @@ import {
   FiClock, FiLayers, FiShield 
 } from "react-icons/fi";
 import { FaFireAlt } from "react-icons/fa"; 
+
+import useAppContext from "../hooks/useAppContext";
+
 import "../styles/Profile.css";
 
 // SYSTEM CONSTANTS: ABSTRACT CONCEPTUAL DESIGN IDENTIFIERS
@@ -24,22 +27,43 @@ const RANK_TIERS = [
 ];
 
 const Profile = () => {
+
+  const { appData, updateUser } = useAppContext();
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const avatarCanvasRef = useRef(null);
   
   const [userProfile, setUserProfile] = useState({
-    username: "Liku",
-    bio: "Biometric systems tuned to absolute high-performance output vectors. Overloading routine parameters daily.",
-    height: "182 cm",
-    weight: "78.5 kg",
-    fitnessGoal: "Hypertrophy Matrix & Neuromuscular Threshold Enhancement",
-    joinDate: "2025.10.12",
-    totalXp: 14200, 
-    streak: 18,
-    longestStreak: 32,
-    selectedAvatarOverride: null 
+      username: appData.user.username,
+      bio: appData.user.bio,
+      height: appData.user.height,
+      weight: appData.user.weight,
+      fitnessGoal: appData.user.fitnessGoal,
+      joinDate: appData.user.joinedDate,
+      totalXp: appData.user.totalXP,
+      streak: appData.user.streak,
+      longestStreak: appData.user.streak,
+      selectedAvatarOverride: null,
   });
+
+
+  useEffect(() => {
+    setUserProfile((prev) => ({
+      ...prev,
+      username: appData.user.username,
+      bio: appData.user.bio,
+      height: appData.user.height,
+      weight: appData.user.weight,
+      fitnessGoal: appData.user.fitnessGoal,
+      joinDate: appData.user.joinedDate,
+      totalXp: appData.user.totalXP,
+      streak: appData.user.streak,
+      longestStreak: appData.user.streak,
+      selectedAvatarOverride:
+        RANK_TIERS.find((tier) => tier.symbolId === appData.user.avatar) || null,
+    }));
+
+  }, [appData.user]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ ...userProfile });
@@ -63,7 +87,10 @@ const Profile = () => {
   const xpPercentage = Math.min((progressInTier / totalTierRequired) * 100, 100);
   const xpRemaining = nextRank ? nextRank.minXp - userProfile.totalXp : 0;
 
-  const activeEmblemObj = userProfile.selectedAvatarOverride || currentRank;
+  const activeEmblemObj =
+  RANK_TIERS.find((tier) => tier.symbolId === appData.user.avatar) ||
+  userProfile.selectedAvatarOverride ||
+  currentRank;
 
   // Trigger Morphing Sequence when Active Emblem Swaps
   useEffect(() => {
@@ -389,13 +416,33 @@ const Profile = () => {
 
   const handleProfileSave = (e) => {
     e.preventDefault();
+
     setUserProfile({ ...editForm });
+
+    updateUser({
+      username: editForm.username,
+      bio: editForm.bio,
+      height: editForm.height,
+      weight: editForm.weight,
+      fitnessGoal: editForm.fitnessGoal,
+    });
+
     setIsEditing(false);
   };
 
   const selectAvatarEmblem = (tier) => {
     if (userProfile.totalXp >= tier.minXp) {
-      setUserProfile(prev => ({ ...prev, selectedAvatarOverride: tier }));
+
+      updateUser({
+        avatar: tier.symbolId,
+        rank: tier.name,
+      });
+
+      setUserProfile((prev) => ({
+        ...prev,
+        selectedAvatarOverride: tier,
+      }));
+
       setShowEmblemSelector(false);
     }
   };
@@ -412,6 +459,8 @@ const Profile = () => {
     }, [symbolId, color]);
     return <canvas ref={previewRef} width={40} height={40} style={{ display: 'block' }} />;
   };
+
+
 
   return (
     <div className="up-viewport-shell">

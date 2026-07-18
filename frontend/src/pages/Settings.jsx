@@ -7,11 +7,15 @@ import {
   FiShield
 } from "react-icons/fi";
 
+
+import  useAppContext  from "../hooks/useAppContext.js";
+
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import "../styles/Settings.css";
 
 const Settings = () => {
+  const { appData, updateUser, updateSettings } = useAppContext();
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const [activeTab, setActiveTab] = useState("settings"); // Kept matching your route scheme
@@ -19,32 +23,13 @@ const Settings = () => {
   const [activeSubSector, setActiveSubSector] = useState("account");
 
   // --- STATE LAYER: CONFIGURATION MATRIX DATA ---
-  const [accountData, setAccountData] = useState({
-    username: "Liku",
-    email: "liku.operator@ascendfit.io",
-    bio: "Biometric systems tuned to absolute high-performance output vectors."
-  });
+  const accountData = appData.user;
 
-  const [appearance, setAppearance] = useState({
-    theme: "Cyber Blue", // Cyber Blue, Neon Purple, Crimson Red, Emerald Green
-    hudIntensity: "Normal", // Minimal, Normal, Extreme
-    particles: true,
-    motionEffects: true
-  });
+  const appearance = appData.settings.appearance;
 
-  const [notifications, setNotifications] = useState({
-    workoutReminder: true,
-    dailyQuest: true,
-    levelUp: true,
-    achievements: true,
-    aiSuggestions: false
-  });
+  const notifications = appData.settings.notifications;
 
-  const [workoutPrefs, setWorkoutPrefs] = useState({
-    restTimer: "60s",
-    units: "Metric",
-    goal: "Muscle Gain"
-  });
+  const workoutPrefs = appData.settings.workoutPrefs;
 
   // --- BACKGROUND PARTICLE SYSTEM ENGINE ---
   useEffect(() => {
@@ -211,7 +196,11 @@ const Settings = () => {
                   <input 
                     type="text" 
                     value={accountData.username} 
-                    onChange={(e) => setAccountData({...accountData, username: e.target.value})} 
+                    onChange={(e) =>
+                        updateUser({
+                            username: e.target.value
+                        })
+                    }
                     className="up-form-field" 
                   />
                 </div>
@@ -220,7 +209,9 @@ const Settings = () => {
                   <input 
                     type="email" 
                     value={accountData.email} 
-                    onChange={(e) => setAccountData({...accountData, email: e.target.value})} 
+                      onChange={(e) => updateUser({
+                        email:e.target.value
+                    })}
                     className="up-form-field" 
                   />
                 </div>
@@ -228,7 +219,9 @@ const Settings = () => {
                   <label>BIOMETRIC IDENTITY OVERVIEW</label>
                   <textarea 
                     value={accountData.bio} 
-                    onChange={(e) => setAccountData({...accountData, bio: e.target.value})} 
+                    onChange={(e) => updateUser({
+                      bio:e.target.value
+                  })} 
                     className="up-form-field textarea-field" 
                   />
                 </div>
@@ -264,7 +257,14 @@ const Settings = () => {
                       <button 
                         key={t} 
                         className={`segment-chip ${appearance.theme === t ? "active" : ""}`}
-                        onClick={() => setAppearance({...appearance, theme: t})}
+                        onClick={() =>
+                          updateSettings({
+                              appearance: {
+                                  ...appearance,
+                                  theme: t
+                              }
+                          })
+                        }
                       >
                         {t.toUpperCase()}
                       </button>
@@ -282,7 +282,12 @@ const Settings = () => {
                       <button 
                         key={intensity} 
                         className={`segment-chip ${appearance.hudIntensity === intensity ? "active" : ""}`}
-                        onClick={() => setAppearance({...appearance, hudIntensity: intensity})}
+                        onClick={() => updateSettings({
+                            appearance:{
+                                ...appearance,
+                                hudIntensity:intensity
+                            }
+                        })}
                       >
                         {intensity.toUpperCase()}
                       </button>
@@ -297,7 +302,12 @@ const Settings = () => {
                   </div>
                   <button 
                     className={`futuristic-toggle-button ${appearance.particles ? "engaged" : "halted"}`}
-                    onClick={() => setAppearance({...appearance, particles: !appearance.particles})}
+                    onClick={() => updateSettings({
+                      appearance:{
+                          ...appearance,
+                          particles: !appearance.particles
+                      }
+                    })}
                   >
                     <div className="status-bead-indicator" />
                     <span>{appearance.particles ? "◉ ONLINE" : "◯ OFFLINE"}</span>
@@ -311,7 +321,12 @@ const Settings = () => {
                   </div>
                   <button 
                     className={`futuristic-toggle-button ${appearance.motionEffects ? "engaged" : "halted"}`}
-                    onClick={() => setAppearance({...appearance, motionEffects: !appearance.motionEffects})}
+                    onClick={() => updateSettings({
+                        appearance:{
+                            ...appearance,
+                            motionEffects: !appearance.motionEffects
+                        }
+                    })}
                   >
                     <div className="status-bead-indicator" />
                     <span>{appearance.motionEffects ? "◉ ENABLED" : "◯ DISABLED"}</span>
@@ -348,7 +363,14 @@ const Settings = () => {
                     </div>
                     <button 
                       className={`futuristic-toggle-button ${notifications[notif.id] ? "engaged" : "halted"}`}
-                      onClick={() => setNotifications({...notifications, [notif.id]: !notifications[notif.id]})}
+                      onClick={() =>
+                        updateSettings({
+                          notifications: {
+                            ...notifications,
+                            [notif.id]: !notifications[notif.id]
+                          }
+                        })
+                      }
                     >
                       <div className="status-bead-indicator" />
                       <span>{notifications[notif.id] ? "◉ ACTIVE" : "◯ INACTIVE"}</span>
@@ -382,7 +404,12 @@ const Settings = () => {
                       <button 
                         key={time} 
                         className={`segment-chip ${workoutPrefs.restTimer === time ? "active" : ""}`}
-                        onClick={() => setWorkoutPrefs({...workoutPrefs, restTimer: time})}
+                        onClick={() => updateSettings({
+                          workoutPrefs: {
+                            ...workoutPrefs,
+                            restTimer: time
+                          }
+                        })}
                       >
                         {time}
                       </button>
@@ -400,7 +427,12 @@ const Settings = () => {
                       <button 
                         key={unit} 
                         className={`segment-chip ${workoutPrefs.units === unit ? "active" : ""}`}
-                        onClick={() => setWorkoutPrefs({...workoutPrefs, units: unit})}
+                        onClick={() => updateSettings({
+                          workoutPrefs: {
+                            ...workoutPrefs,
+                            units: unit
+                          }
+                        })}
                       >
                         {unit.toUpperCase()}
                       </button>
@@ -418,7 +450,12 @@ const Settings = () => {
                       <button 
                         key={g} 
                         className={`segment-chip ${workoutPrefs.goal === g ? "active" : ""}`}
-                        onClick={() => setWorkoutPrefs({...workoutPrefs, goal: g})}
+                        onClick={() => updateSettings({
+                          workoutPrefs: {
+                            ...workoutPrefs,
+                            goal: g
+                          }
+                        })}
                       >
                         {g.toUpperCase()}
                       </button>

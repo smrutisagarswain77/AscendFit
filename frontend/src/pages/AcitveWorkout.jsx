@@ -2,70 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import useAppContext from "../hooks/useAppContext";
+
 import { 
-  FiPlay, FiPause, FiChevronsRight, FiPlus, FiMinus, 
+  FiPause, FiChevronsRight, FiPlus, FiMinus, 
   FiCheckCircle, FiClock, FiZap, FiActivity, FiLayers, 
-  FiAlertTriangle, FiShield, FiRotateCcw, FiLogOut, FiAward, FiTrendingUp 
+  FiAlertTriangle, FiShield,  FiAward, FiTrendingUp 
 } from "react-icons/fi";
 import "../styles/ActiveWorkout.css";
 
 // Mocking a structured mission workout configuration injected from the parent Workout route
-const MISSION_DATA = {
-  id: "m_push_alpha",
-  name: "PUSH DAY: OVERRIDE",
-  totalExercises: 3,
-  targetXp: 350,
-  exercises: [
-    {
-      id: "ex_1",
-      name: "Progressive Bench Press",
-      muscleGroup: "Chest",
-      secondaryMuscles: ["Triceps", "Front Delts"],
-      videoFolder: "chest",
-      videoFile: "chest_01.mp4",
-      difficulty: "Intermediate",
-      targetSets: 4,
-      targetReps: 10,
-      targetWeight: 60,
-      history: { target: "60 kg × 10", lastSession: "57.5 kg × 10", personalBest: "65 kg × 8" },
-      steps: ["Lie flat on the bench.", "Grip the bar slightly wider than shoulder-width.", "Lower the weight slowly to mid-chest.", "Press upward explosively while keeping shoulders locked.", "Repeat for the target repetition framework."],
-      mistakes: ["Bouncing the bar forcefully off your sternum.", "Flaring elbows outward at a sharp 90-degree angle.", "Arching the lumbar spine excessively off the bench pad."],
-      safety: ["Ensure a spotter or safety rails are active.", "Execute a thorough progressive warm-up first.", "Maintain complete kinetic control over the eccentric load phase."]
-    },
-    {
-      id: "ex_2",
-      name: "Incline Dumbbell Press",
-      muscleGroup: "Chest",
-      secondaryMuscles: ["Front Delts", "Triceps"],
-      videoFolder: "chest",
-      videoFile: "chest_02.mp4",
-      difficulty: "Intermediate",
-      targetSets: 3,
-      targetReps: 12,
-      targetWeight: 24,
-      history: { target: "24 kg × 12", lastSession: "22.5 kg × 12", personalBest: "26 kg × 10" },
-      steps: ["Set incline bench to a 30-45 degree angle.", "Position dumbbells at chest level with neutral wrists.", "Drive dumbbells up until arms are fully extended.", "Lower slowly down to deep chest pocket stretch."],
-      mistakes: ["Using too steep of an angle shifting work to front delts.", "Clashing dumbbells together at the top of the movement."],
-      safety: ["Keep your feet planted flat on the floor for lateral balance.", "Drop weights safely to the side if catastrophic failure occurs."]
-    },
-    {
-      id: "ex_3",
-      name: "Overhead Barbell Press",
-      muscleGroup: "Shoulders",
-      secondaryMuscles: ["Triceps", "Core"],
-      videoFolder: "shoulders",
-      videoFile: "shoulder_01.mp4",
-      difficulty: "Advanced",
-      targetSets: 3,
-      targetReps: 8,
-      targetWeight: 45,
-      history: { target: "45 kg × 8", lastSession: "42.5 kg × 8", personalBest: "50 kg × 6" },
-      steps: ["Rack barbell at upper chest height.", "Brace your core, glutes, and thighs tightly.", "Press bar straight overhead, clearing your chin/face.", "Lock out arms at the apex and hold for a brief count."],
-      mistakes: ["Leaning backward excessively, hyperextending lower back.", "Failing to lock out elbows at the top peak configuration."],
-      safety: ["Use a lifting belt if managing high relative RPE loads.", "Do not push past failure without micro safety arms configured."]
-    }
-  ]
-};
+
 
 const AI_COACH_TIPS = [
   "Form is your ultimate shield; never compromise execution mechanics for ego metrics.",
@@ -78,7 +25,7 @@ const AI_COACH_TIPS = [
 const ActiveWorkout = () => {
   // Core Interface Lifecycle States
   const navigate = useNavigate();
-
+  const { appData, updateWorkout } = useAppContext();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -90,7 +37,10 @@ const ActiveWorkout = () => {
   const [earnedXp, setEarnedXp] = useState(0);
   
   // Interactive Logging Tracking States
-  const currentExercise = MISSION_DATA.exercises[currentExerciseIndex];
+  const workout = appData.workouts.activeWorkout;
+
+  const currentExercise =
+    workout.exercises[currentExerciseIndex];
   const [completedStructure, setCompletedStructure] = useState({}); // Tracking sets dynamically per exercise
   const [activeWeight, setActiveWeight] = useState(currentExercise.targetWeight);
   const [activeReps, setActiveReps] = useState(currentExercise.targetReps);
@@ -158,7 +108,7 @@ const ActiveWorkout = () => {
     let totalPlannedSets = 0;
     let completedSetsCount = 0;
     
-    MISSION_DATA.exercises.forEach(ex => {
+    workout.exercises.forEach(ex => {
       totalPlannedSets += ex.targetSets;
       const setStatus = completedStructure[ex.id] || Array(ex.targetSets).fill(false);
       completedSetsCount += setStatus.filter(Boolean).length;
@@ -225,14 +175,14 @@ const ActiveWorkout = () => {
       setCurrentSetIndex(currentSetIndex + 1);
     } else {
       // Check if there are more exercises to advance to automatically down the pipeline
-      if (currentExerciseIndex + 1 < MISSION_DATA.exercises.length) {
+      if (currentExerciseIndex + 1 < workout.exercises.length) {
         // Stay on this exercise screen until they click next, or let them view completions
       }
     }
   };
 
   const handleNextExercise = () => {
-    if (currentExerciseIndex + 1 < MISSION_DATA.exercises.length) {
+    if (currentExerciseIndex + 1 < workout.exercises.length) {
       setCurrentExerciseIndex(prev => prev + 1);
     } else {
       // All exercises processed through workspace pipeline -> Trigger Terminal Completion Summary
@@ -241,7 +191,7 @@ const ActiveWorkout = () => {
   };
 
   const triggerMissionComplete = () => {
-    let finalXpBonus = MISSION_DATA.targetXp;
+    let finalXpBonus = workout.targetXp;
     if (perfectWorkout) finalXpBonus += 50;
     if (perfectPace) finalXpBonus += 20;
     
@@ -278,7 +228,7 @@ const ActiveWorkout = () => {
             <span className="beacon-ping" />
             <span className="badge-string">LIVE MISSION AXIS</span>
           </div>
-          <h1>{MISSION_DATA.name}</h1>
+          <h1>{workout.name}</h1>
         </div>
 
         <div className="header-metrics-control-dock">
@@ -330,7 +280,7 @@ const ActiveWorkout = () => {
           <div className="mission-progress-broadcaster-panel">
             <div className="progress-meta-text-row">
               <span className="exercise-index-marker font-monospace">
-                EXERCISE <span className="highlight-text">{currentExerciseIndex + 1}</span> / {MISSION_DATA.totalExercises}
+                EXERCISE <span className="highlight-text">{currentExerciseIndex + 1}</span> / {workout.totalExercises}
               </span>
               <span className="completion-percentage-marker font-monospace">{progressPercentage}% METRIC ACCUMULATED</span>
             </div>
@@ -391,7 +341,7 @@ const ActiveWorkout = () => {
                         */}
                         <video 
                           className="kinetic-loop-video-element"
-                          src={`/assets/videos/${currentExercise.videoFolder}/${currentExercise.videoFile}`}
+                          src={`videos/${currentExercise.videoFolder}/${currentExercise.videoFile}`}
                           autoPlay 
                           loop 
                           muted 
@@ -589,12 +539,12 @@ const ActiveWorkout = () => {
           {/* NEXT PREVIEW MATRIX SECTOR FRAME */}
           <div className="next-exercise-preview-horizon-card">
             <div className="hud-card-header-strip font-monospace">// UPCOMING OBJECTIVE PREVIEW</div>
-            {currentExerciseIndex + 1 < MISSION_DATA.exercises.length ? (
+            {currentExerciseIndex + 1 < workout.exercises.length ? (
               <div className="preview-payload-active-row">
                 <div className="preview-meta-details-left">
-                  <h5>{MISSION_DATA.exercises[currentExerciseIndex + 1].name}</h5>
+                  <h5>{workout.exercises[currentExerciseIndex + 1].name}</h5>
                   <span className="preview-sub-specs font-monospace">
-                    {MISSION_DATA.exercises[currentExerciseIndex + 1].targetSets} Sets × {MISSION_DATA.exercises[currentExerciseIndex + 1].targetReps} Reps | Target Weight: {MISSION_DATA.exercises[currentExerciseIndex + 1].targetWeight}kg
+                    {workout.exercises[currentExerciseIndex + 1].targetSets} Sets × {workout.exercises[currentExerciseIndex + 1].targetReps} Reps | Target Weight: {workout.exercises[currentExerciseIndex + 1].targetWeight}kg
                   </span>
                 </div>
                 <button className="advance-exercise-navigation-trigger-btn" onClick={handleNextExercise} aria-label="Advance to upcoming exercise module">
@@ -617,11 +567,11 @@ const ActiveWorkout = () => {
             <div className="diagnostic-data-table-rows">
               <div className="diag-row font-monospace">
                 <span className="lbl">COMPLETED STRUCTURAL ITEMS</span>
-                <span className="val">{currentExerciseIndex} / {MISSION_DATA.totalExercises} Nodes</span>
+                <span className="val">{currentExerciseIndex} / {workout.totalExercises} Nodes</span>
               </div>
               <div className="diag-row font-monospace">
                 <span className="lbl">REMAINING TRAJECTORY CORES</span>
-                <span className="val">{MISSION_DATA.totalExercises - currentExerciseIndex} Modules</span>
+                <span className="val">{workout.totalExercises - currentExerciseIndex} Modules</span>
               </div>
               <div className="diag-row font-monospace">
                 <span className="lbl">CHRONO WORKOUT DURATION</span>
@@ -745,7 +695,7 @@ const ActiveWorkout = () => {
                   </div>
                   <div className="summary-data-box font-monospace">
                     <span className="lbl">COMPLETED EXERCISE BLOCK MATRIX</span>
-                    <span className="val text-white">{MISSION_DATA.totalExercises} / {MISSION_DATA.totalExercises} Nodes</span>
+                    <span className="val text-white">{workout.totalExercises} / {workout.totalExercises} Nodes</span>
                   </div>
                 </div>
 

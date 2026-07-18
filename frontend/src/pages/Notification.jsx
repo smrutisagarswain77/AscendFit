@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import useAppContext from "../hooks/useAppContext";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -10,6 +11,12 @@ import "../styles/Notification.css";
 
 const Notification = ({ onClose }) => {
   const navigate = useNavigate();
+  const {
+    appData,
+    toggleNotificationRead,
+    markAllNotificationsRead,
+    clearReadNotifications
+  } = useAppContext();
   const canvasRef = useRef(null);
   const [activeFilter, setActiveFilter] = useState("All");
   
@@ -21,84 +28,8 @@ const Notification = ({ onClose }) => {
   ]);
 
   // --- COMPREHENSIVE PRODUCTION NOTIFICATION MATRIX ---
-  const [notifications, setNotifications] = useState([
-    {
-      id: "n1",
-      type: "Achievements",
-      tag: "LEVEL UP",
-      icon: <FiAward />,
-      title: "You reached Level 12",
-      message: "Neural performance benchmarks shattered. Metric calculations upgrading dynamically.",
-      timeline: "TODAY",
-      timeText: "2 minutes ago",
-      isRead: false,
-      priority: "achievement",
-      action: { label: "VIEW PROFILE", handler: () => navigate("/profile") }
-    },
-    {
-      id: "n2",
-      type: "AI",
-      tag: "AI COACH",
-      icon: <FiCpu />,
-      title: "Today's recommendation is ready",
-      message: "Adaptive split generated: High-intensity progressive load targets calibrated for deltoids.",
-      timeline: "TODAY",
-      timeText: "1 hour ago",
-      isRead: false,
-      priority: "ai",
-      action: { label: "OPEN AI COACH", handler: () => navigate("/ai-coach") }
-    },
-    {
-      id: "n3",
-      type: "Workouts",
-      tag: "WORKOUT",
-      icon: <FiActivity />,
-      title: "Push Day Completed",
-      message: "Volume threshold exceeded previous target parameters by 8.4%.",
-      timeline: "TODAY",
-      timeText: "4 hours ago",
-      isRead: true,
-      priority: "workout",
-      meta: "+120 XP"
-    },
-    {
-      id: "n4",
-      type: "Achievements",
-      tag: "STREAK PROTOCOL",
-      icon: <FiClock />,
-      title: "7 Day Streak Completed",
-      message: "Consistency baseline sustained. High performance cascade multiplication engaged.",
-      timeline: "YESTERDAY",
-      timeText: "Yesterday",
-      isRead: false,
-      priority: "info",
-      action: { label: "CLAIM REWARD", handler: () => alert("Reward Matrix Synchronized!") }
-    },
-    {
-      id: "n5",
-      type: "System",
-      tag: "SECURITY EXCLUSION",
-      icon: <FiAlertTriangle />,
-      title: "Encryption Key Updated",
-      message: "Main network access credentials modified via remote terminal configuration override.",
-      timeline: "This Week",
-      timeText: "3 days ago",
-      isRead: true,
-      priority: "important"
-    },
-    {
-      id: "n6",
-      type: "Account",
-      tag: "CORE ARCHITECTURE",
-      icon: <FiUser />,
-      title: "Registration Complete",
-      message: "Welcome to AscendFit OS. Main authorization handshake sequence complete.",
-      timeline: "Earlier",
-      timeText: "1 week ago",
-      isRead: true,
-      priority: "info"
-    }
-  ]);
+  
+  const notifications = appData.notifications.items;
 
   // --- UNIFIED QUANTUM PARTICLE CANVAS MATRIX (Matches your Dashboard exactly) ---
   useEffect(() => {
@@ -175,6 +106,16 @@ const Notification = ({ onClose }) => {
     };
   }, []);
 
+
+  const iconMap = {
+    award: <FiAward />,
+    cpu: <FiCpu />,
+    activity: <FiActivity />,
+    clock: <FiClock />,
+    alert: <FiAlertTriangle />,
+    user: <FiUser />,
+  };
+
   // --- LIVE TELEMETRY SIMULATOR LOGS ---
   useEffect(() => {
     const metrics = ["System Array Flushed", "Quest Core Validated", "Heartrate Cache Synced", "Neural Engine Peak Performance"];
@@ -187,9 +128,17 @@ const Notification = ({ onClose }) => {
   }, []);
 
   // --- CARD CONTROLLERS ---
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-  const clearRead = () => setNotifications(prev => prev.filter(n => !n.isRead));
-  const toggleRead = (id) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: !n.isRead } : n));
+  const markAllRead = () => {
+      markAllNotificationsRead();
+  };
+
+  const clearRead = () => {
+      clearReadNotifications();
+  };
+
+  const toggleRead = (id) => {
+      toggleNotificationRead(id);
+  };
 
   // --- STATS COMPILER ---
   const stats = {
@@ -320,7 +269,7 @@ const Notification = ({ onClose }) => {
                           <div className="nt-card-inner-telemetry">
                             <div className="nt-card-top-meta-row">
                               <div className="nt-card-category-block">
-                                <span className="nt-cat-vector-bracket">{item.icon}</span>
+                                <span className="nt-cat-vector-bracket">{iconMap[item.icon]}</span>
                                 <span className="nt-cat-string-tag">{item.tag}</span>
                               </div>
                               <div className="nt-card-timestamp-block">
@@ -340,7 +289,7 @@ const Notification = ({ onClose }) => {
                             {(item.action || item.meta) && (
                               <div className="nt-card-action-dock-bay">
                                 {item.action ? (
-                                  <button className="nt-macro-trigger-action-btn" onClick={item.action.handler}>
+                                  <button className="nt-macro-trigger-action-btn" onClick={() => navigate(item.action.route)}>
                                     <span className="nt-macro-btn-txt">{item.action.label}</span>
                                   </button>
                                 ) : (

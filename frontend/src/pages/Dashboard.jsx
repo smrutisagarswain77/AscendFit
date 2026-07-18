@@ -14,12 +14,15 @@ import {
   FiZap
 } from "react-icons/fi";
 
+import useAppContext from "../hooks/useAppContext";
+
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import "../styles/Dashboard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { appData } = useAppContext();
   const canvasRef = useRef(null);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
@@ -31,13 +34,7 @@ const Dashboard = () => {
     { id: "m3", text: "Finish 3 Quests", completed: false }
   ]);
 
-  const [terminalLogs] = useState([
-    "Workout Completed",
-    "+150 XP",
-    "Quest Updated",
-    "AI Recommendation Ready",
-    "Heart Rate Synced"
-  ]);
+  const terminalLogs = appData.systemFeed;
 
   // Handle interactive checkbox adjustments
   const toggleMission = (id) => {
@@ -168,27 +165,27 @@ const Dashboard = () => {
                 </div>
                 <div className="db-hero-identity-stack">
                   <span className="db-hero-welcome-string">Welcome Back</span>
-                  <h2 className="db-hero-name-string">Good Morning Alok</h2>
+                  <h2 className="db-hero-name-string">Good Morning {appData.user.username}</h2>
                 </div>
               </div>
               <div className="db-hero-gamified-stats">
                 <div className="db-hero-metric-node">
                   <span className="db-hero-node-lbl">RANK LAYER</span>
-                  <div className="db-hero-level-badge">LEVEL 12</div>
+                  <div className="db-hero-level-badge">LEVEL {appData.user.level}</div>
                 </div>
                 <div className="db-hero-metric-node db-xp-progress-node">
                   <div className="db-xp-readout-row">
                     <span className="db-hero-node-lbl">XP PROGRESS</span>
-                    <span className="db-hero-node-val">720 / 1000 XP</span>
+                    <span className="db-hero-node-val">{appData.user.currentXP} / {appData.user.nextLevelXP} XP</span>
                   </div>
                   <div className="db-xp-bar-perimeter">
-                    <div className="db-xp-bar-fill" style={{ width: "72%" }} />
+                    <div className="db-xp-bar-fill" style={{ width: `${(appData.user.currentXP / appData.user.nextLevelXP) * 100}%` }} />
                   </div>
                 </div>
                 <div className="db-hero-metric-node">
                   <span className="db-hero-node-lbl">CURRENT RUN</span>
                   <div className="db-hero-streak-badge">
-                    <FiZap className="db-streak-fire-icon" /> 14 Day Streak
+                    <FiZap className="db-streak-fire-icon" /> {appData.user.streak} Day Streak
                   </div>
                 </div>
               </div>
@@ -217,7 +214,7 @@ const Dashboard = () => {
               ))}
               <div className="db-mission-reward-footer">
                 <span className="db-reward-lbl">REWARD</span>
-                <span className="db-reward-value text-cyan">+250 XP</span>
+                <span className="db-reward-value text-cyan">+{appData.user.dailyMissionReward} XP</span>
               </div>
             </div>
           </motion.div>
@@ -290,27 +287,27 @@ const Dashboard = () => {
             <div className="db-progress-extended-grid">
               <div className="db-progress-sub-box">
                 <span className="db-box-lbl">Heart Rate</span>
-                <span className="db-streak-digit-glow text-cyan">72<span className="db-streak-lbl-sub">BPM</span></span>
+                <span className="db-streak-digit-glow text-cyan">{appData.user.heartRate}<span className="db-streak-lbl-sub">BPM</span></span>
               </div>
               <div className="db-progress-sub-box">
                 <span className="db-box-lbl">Calories Burn</span>
-                <span className="db-streak-digit-glow text-purple">640<span className="db-streak-lbl-sub">KCAL</span></span>
+                <span className="db-streak-digit-glow text-purple">{appData.user.caloriesBurned}<span className="db-streak-lbl-sub">KCAL</span></span>
               </div>
               <div className="db-progress-sub-box">
                 <span className="db-box-lbl">Streak</span>
-                <span className="db-streak-digit-glow text-cyan">14<span className="db-streak-lbl-sub">DAYS</span></span>
+                <span className="db-streak-digit-glow text-cyan">{appData.user.streak}<span className="db-streak-lbl-sub">DAYS</span></span>
               </div>
               <div className="db-progress-sub-box db-highlight-weekly">
                 <span className="db-box-lbl">Workout This Week</span>
-                <span className="db-streak-digit-glow">5<span className="db-streak-lbl-sub">Hours</span></span>
+                <span className="db-streak-digit-glow">{appData.user.weeklyWorkoutHours}<span className="db-streak-lbl-sub">Hours</span></span>
               </div>
               <div className="db-progress-sub-box db-highlight-weekly">
                 <span className="db-box-lbl">Calories</span>
-                <span className="db-streak-digit-glow text-purple">6.4<span className="db-streak-lbl-sub">K</span></span>
+                <span className="db-streak-digit-glow text-purple">{(appData.user.caloriesBurned / 1000).toFixed(1)}<span className="db-streak-lbl-sub">K</span></span>
               </div>
               <div className="db-progress-sub-box db-highlight-weekly">
                 <span className="db-box-lbl">XP Earned</span>
-                <span className="db-streak-digit-glow text-cyan">670<span className="db-streak-lbl-sub">XP</span></span>
+                <span className="db-streak-digit-glow text-cyan">{appData.user.totalXP}<span className="db-streak-lbl-sub">XP</span></span>
               </div>
             </div>
           </motion.div>

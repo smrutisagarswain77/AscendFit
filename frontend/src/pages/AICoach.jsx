@@ -5,12 +5,25 @@ import {
   FiCpu, FiZap, FiActivity, FiClock, FiPlay, FiTrendingUp, 
   FiSend, FiPlus, FiGrid, FiSmile, FiRefreshCw
 } from "react-icons/fi";
+
+import useAppContext from "../hooks/useAppContext";
+
+
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import "../styles/AICoach.css";
 
 const AICoach = () => {
   const navigate = useNavigate();
+  const {
+    appData,
+    addAIMessage,
+    clearAIConversation,
+    addWorkout,
+    setAIRecommendation,
+    setRecoveryScore,
+    setDailyTip
+  } = useAppContext();
   const canvasRef = useRef(null);
   const chatEndRef = useRef(null);
   const [activeTab, setActiveTab] = useState("ai-coach");
@@ -26,15 +39,7 @@ const AICoach = () => {
   const [generatedWorkout, setGeneratedWorkout] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const [messages, setMessages] = useState([
-    {
-      id: "m1",
-      sender: "ai",
-      text: "Welcome back, Commander. Synthesizing your biometric stream data... I noticed you trained chest twice this week, but your quadriceps metrics have been flat for 6 days. Let's optimize your layout today.",
-      timestamp: "10:42 AM",
-      suggestions: ["Generate Leg Split", "Analyze My Progress", "Suggest Recovery Protocols"]
-    }
-  ]);
+  const messages = appData.aiCoach.conversation;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,7 +102,7 @@ const AICoach = () => {
   // FIXED: block: "nearest" eliminates screen/page window shift glitch completely
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [messages, isTyping]);
+  }, [appData.aiCoach.conversation, isTyping]);
 
   const handleSendMessage = (textToSend) => {
     const prompt = textToSend || userInput;
@@ -106,7 +111,7 @@ const AICoach = () => {
     const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMsg = { id: `u-${Date.now()}`, sender: "user", text: prompt, timestamp: userTime };
     
-    setMessages(prev => [...prev, userMsg]);
+    addAIMessage(userMsg);
     if (!textToSend) setUserInput("");
     setIsTyping(true);
 
@@ -127,13 +132,13 @@ const AICoach = () => {
         suggestions = ["Generate Workout", "Nutrition Tips"];
       }
 
-      setMessages(prev => [...prev, {
-        id: `ai-${Date.now()}`,
-        sender: "ai",
-        text: aiResponseText,
-        timestamp: aiTime,
-        suggestions
-      }]);
+      addAIMessage({
+          id: `ai-${Date.now()}`,
+          sender: "ai",
+          text: aiResponseText,
+          timestamp: aiTime,
+          suggestions
+      });
     }, 1200);
   };
 
@@ -204,7 +209,7 @@ const AICoach = () => {
                   <span className="status-string">ASCEND AI OPERATIONAL</span>
                 </div>
                 <h3>COMMAND INTEL CORE</h3>
-                <p>Personalized Performance Architecture & Intelligence Hub</p>
+                <p>{appData.aiCoach.dailyTip}</p>
               </div>
             </motion.div>
 
@@ -324,7 +329,7 @@ const AICoach = () => {
               <div className="hud-telemetry-grid-metrics">
                 <div className="metric-box">
                   <span className="lbl">RECOVERY OVERRIDE</span>
-                  <span className="val metric-glow-green">82%</span>
+                  <span className="val metric-glow-green">{appData.aiCoach.recoveryScore}%</span>
                 </div>
                 <div className="metric-box">
                   <span className="lbl">ENERGY MATRIX</span>
@@ -344,11 +349,11 @@ const AICoach = () => {
               </div>
               <div className="proactive-recommendation-body">
                 <div className="rec-badge-line">
-                  <span className="rec-title">PUSH DAY SYSTEM</span>
+                  <span className="rec-title">{appData.aiCoach.recommendation.workout}</span>
                   <span className="rec-time"><FiClock /> 42 MINS</span>
                 </div>
                 <p className="rec-reason-statement">
-                  <span className="reason-label">REASONING:</span> You have bypassed structural pectoral and chest load nodes for 6 consecutive days. Calibrating progressive push volume immediately balances structural trajectory.
+                  <span className="reason-label">REASONING:</span> {appData.aiCoach.recommendation.reason}
                 </p>
               </div>
             </motion.div>
@@ -441,7 +446,19 @@ const AICoach = () => {
                     </div>
                     <button 
                       className="blueprint-add-to-workouts-btn"
-                      onClick={() => alert("Schematic dispatched to Workouts database log layer!")}
+                      onClick={() => {
+
+                        addWorkout({
+                            id: Date.now(),
+                            title: generatedWorkout.title,
+                            duration: generatedWorkout.duration,
+                            completed: false,
+                            exercises: generatedWorkout.exercises
+                        });
+
+                        setGeneratedWorkout(null);
+
+                    }}
                     >
                       <FiPlus /> <span>INJECT INTO MY WORKOUTS PAGE</span>
                     </button>
@@ -458,11 +475,11 @@ const AICoach = () => {
               <div className="progress-analysis-readout-rows">
                 <div className="diagnostic-row-item">
                   <span className="lbl">METRIC CYCLE</span>
-                  <span className="val">5 WORKOUTS INDEXED</span>
+                  <span className="val">{appData.statistics.totalWorkouts} WORKOUTS INDEXED</span>
                 </div>
                 <div className="diagnostic-row-item">
                   <span className="lbl">TRANSACTION GAINS</span>
-                  <span className="val text-green">+850 XP RECEIVED</span>
+                  <span className="val text-green">+{appData.user.currentXP} XP</span>
                 </div>
                 <div className="diagnostic-row-item">
                   <span className="lbl">CONSISTENCY ACCURACY</span>
@@ -481,7 +498,7 @@ const AICoach = () => {
               </div>
               <div className="memory-card-payload">
                 <p className="motivation-alert-text">
-                  You are currently trailing exactly <span className="highlight-amber">180 XP</span> clear of breaking into the coveted <span className="highlight-cyan">Commander Rank</span>. Executing today's suggested operational chest/push layout satisfies this deployment parameter completely.
+                  You are currently trailing exactly <span className="highlight-amber">{appData.user.nextLevelXP - appData.user.currentXP} XP</span> clear of breaking into the coveted <span className="highlight-cyan">{appData.user.rank}</span>. Executing today's suggested operational chest/push layout satisfies this deployment parameter completely.
                 </p>
                 <div className="memory-recall-historical-footer-pills">
                   <div className="recall-historical-pill">

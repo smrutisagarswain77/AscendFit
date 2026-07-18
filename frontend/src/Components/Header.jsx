@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiBell, FiUser, FiActivity, FiTerminal, FiShield } from "react-icons/fi";
+
+import  useAppContext  from "../hooks/useAppContext";
+
 import "../styles/Header.css";
+
 
 const Header = ({ title }) => {
   const navigate = useNavigate();
+  const { appData } = useAppContext();
   const [systemTime, setSystemTime] = useState("00:00:00");
   const [msCount, setMsCount] = useState("000");
   const [showNotifications, setShowNotifications] = useState(false);
@@ -15,12 +20,20 @@ const Header = ({ title }) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
-      setSystemTime(now.toTimeString().split(" ")[0]);
+      setSystemTime(
+        now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        })
+      );
       setMsCount(String(now.getMilliseconds()).padStart(3, "0"));
     }, 1);
     return () => clearInterval(timer);
   }, []);
 
+  const unreadNotifications = appData.notifications.unreadCount;
   const alertsLog = [
     { id: "ALRT_01", message: "AI Coach completed data stream mapping.", time: "2m ago" },
     { id: "ALRT_02", message: "Biometric load threshold reached 85%.", time: "12m ago" },
@@ -106,8 +119,8 @@ const Header = ({ title }) => {
               <div className="hd-avatar-corner-brackets" />
             </div>
             <div className="hd-avatar-meta-stack">
-              <span className="hd-user-callsign">OP_ZERO</span>
-              <span className="hd-user-sub-node">SYS_ADMIN</span>
+              <span className="hd-user-callsign">{appData.user.username}</span>
+              <span className="hd-user-sub-node">{appData.user.rank}</span>
             </div>
             <div className="hd-profile-glow-shell" />
           </button>
@@ -128,11 +141,11 @@ const Header = ({ title }) => {
                 <div className="hd-profile-stats-grid">
                   <div className="hd-stat-mini-box">
                     <span className="hd-box-lbl">SYNC ENGINES</span>
-                    <span className="hd-box-val hd-cyan-neon">100%</span>
+                    <span className="hd-box-val hd-cyan-neon">LV{appData.user.level}</span>
                   </div>
                   <div className="hd-stat-mini-box">
                     <span className="hd-box-lbl">QUANTUM LINK</span>
-                    <span className="hd-box-val">SECURE</span>
+                    <span className="hd-box-val">{appData.user.rank}</span>
                   </div>
                 </div>
                 <div className="hd-panel-footer-action">

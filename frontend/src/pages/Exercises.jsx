@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+
+import useAppContext from "../hooks/useAppContext";
+
 import { 
   FiBookOpen, 
   FiSearch, 
@@ -23,6 +26,10 @@ import "../styles/Exercises.css";
 
 const Exercises = () => {
   const navigate = useNavigate();
+  const {
+    appData,
+    updateExercises
+  } = useAppContext();
   const canvasRef = useRef(null);
   const [activeTab, setActiveTab] = useState("exercises");
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
@@ -36,82 +43,15 @@ const Exercises = () => {
   
   // Simulation Mode state (Browsing vs Add-To-Workout Mode Context)
   const [isBrowsingContext, setIsBrowsingContext] = useState(true);
-  const [addedTracker, setAddedTracker] = useState({});
+  const addedTracker = appData.exercises.addedTracker;
 
   // Mock Database Array
-  const [exerciseDatabase] = useState([
-    {
-      id: "ex-01",
-      name: "Barbell Bench Press",
-      muscleGroup: "Chest",
-      difficulty: "Intermediate",
-      equipment: "Barbell",
-      description: "The gold-standard upper body compounding movement targeting structural chest thickness, anterior deltoids, and triceps stabilization matrix.",
-      tips: ["Keep your shoulder blades dynamically retracted.", "Maintain absolute foot grounding drive throughout execution line.", "Bar path should trace a slight J-curve vector."]
-    },
-    {
-      id: "ex-02",
-      name: "Deficit Push-Up",
-      muscleGroup: "Chest",
-      difficulty: "Beginner",
-      equipment: "Bodyweight",
-      description: "Elevated platform placement maximizes fiber stretching coefficients in the deep pectoral channels while engaging full core anti-extension control.",
-      tips: ["Do not allow your pelvic line to sag through the horizontal plane.", "Push fully through your palms to spread scapular structures at the crest."]
-    },
-    {
-      id: "ex-03",
-      name: "Conventional Deadlift",
-      muscleGroup: "Back",
-      difficulty: "Advanced",
-      equipment: "Barbell",
-      description: "The ultimate posterior chain structural test requiring simultaneous execution of hip-hinge mechanics, lat engagement, and grip stability.",
-      tips: ["Pack your lats down tightly as if compressing springs prior to floor lift.", "Drive through your heels—do not pull strictly with your lower spinal cluster."]
-    },
-    {
-      id: "ex-04",
-      name: "Dumbbell Romanian Deadlift",
-      muscleGroup: "Legs",
-      difficulty: "Intermediate",
-      equipment: "Dumbbell",
-      description: "Isolated structural hip-hinge loading targeted directly at mechanical hamstring and glute elongation indices under full active load.",
-      tips: ["Maintain a neutral neck vector aligned with the lumbar spine.", "Push hips straight back along the linear axis instead of squatting downwards."]
-    },
-    {
-      id: "ex-05",
-      name: "Overhead Military Press",
-      muscleGroup: "Shoulders",
-      difficulty: "Advanced",
-      equipment: "Barbell",
-      description: "Strict vertical structural press assessing dynamic core rigidity and full upward glenohumeral rotation capacities.",
-      tips: ["Squeeze your glutes tightly to avoid hyperextending your lower back.", "Clear your facial profile before punching the bar vertically."]
-    },
-    {
-      id: "ex-06",
-      name: "Incline Dumbbell Curl",
-      muscleGroup: "Arms",
-      difficulty: "Beginner",
-      equipment: "Dumbbell",
-      description: "Seated incline positioning sets the long head of the bicep brachii into a passive stretch profile, maximizing muscular peak activation spikes.",
-      tips: ["Keep elbows locked tightly to the rear vertical plane.", "Exhaustively articulate full supination at the peak contraction zone."]
-    },
-    {
-      id: "ex-07",
-      name: "Hanging Leg Raise",
-      muscleGroup: "Core",
-      difficulty: "Intermediate",
-      equipment: "Bodyweight",
-      description: "High-level anterior chain core stability expression moving the lower structural column while hanging from an overhead anchorage anchor.",
-      tips: ["Initiate pelvic tilt rotation first rather than swinging hip flexors.", "Control the eccentric descent timeline strictly without generated velocity."]
-    }
-  ]);
+  const exerciseDatabase = appData.exercises.exerciseList;
 
-  const [recentlyViewed, setRecentlyViewed] = useState(["ex-01", "ex-03", "ex-02"]);
-  const aiCoachRecommendation = {
-    name: "Barbell Bench Press",
-    muscleGroup: "Chest",
-    difficulty: "Intermediate",
-    reasoning: "System log indicates your last structural chest thread was registered 5 days ago. Recommended to initialize compound mechanical tissue overload."
-  };
+  const recentlyViewed = appData.exercises.recentlyViewed;
+
+  const aiCoachRecommendation =
+  appData.exercises.aiCoachRecommendation;
 
   // Matrix Particle Canvas Sync Loop
   useEffect(() => {
@@ -209,14 +149,26 @@ const Exercises = () => {
 
   const triggerCardInspect = (exercise) => {
     setSelectedExercise(exercise);
+
     if (!recentlyViewed.includes(exercise.id)) {
-      setRecentlyViewed([exercise.id, ...recentlyViewed.filter(id => id !== exercise.id)].slice(0, 4));
+      updateExercises({
+        recentlyViewed: [
+          exercise.id,
+          ...recentlyViewed.filter(id => id !== exercise.id)
+        ].slice(0, 4)
+      });
     }
   };
 
   const toggleAddWorkoutNode = (id, e) => {
     e.stopPropagation();
-    setAddedTracker(prev => ({ ...prev, [id]: !prev[id] }));
+
+    updateExercises({
+      addedTracker: {
+        ...addedTracker,
+        [id]: !addedTracker[id]
+      }
+    });
   };
 
   return (

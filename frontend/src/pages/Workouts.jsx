@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiActivity, 
-  FiSearch, 
-  FiFilter, 
+  FiSearch,  
   FiPlus, 
   FiPlay, 
   FiEye, 
@@ -16,12 +15,18 @@ import {
   FiCheckCircle
 } from "react-icons/fi";
 
+import  useAppContext  from "../hooks/useAppContext";
+
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import "../styles/Workouts.css";
 
 const Workouts = () => {
   const navigate = useNavigate();
+  const {
+  appData,
+  updateWorkout
+} = useAppContext();
   const canvasRef = useRef(null);
   const [activeTab, setActiveTab] = useState("workouts");
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
@@ -34,54 +39,9 @@ const Workouts = () => {
 
   const [newWorkout, setNewWorkout] = useState({ name: "", notes: "", category: "Push" });
 
-  const [workouts, setWorkouts] = useState([
-    {
-      id: "w-01",
-      name: "Hypertrophy Push Alpha",
-      status: "In Progress",
-      exercises: 6,
-      duration: 52,
-      calories: 480,
-      date: "2026-07-08",
-      readiness: "Ready",
-      recovery: "High",
-      aiRecommendation: true,
-      category: "Push"
-    },
-    {
-      id: "w-02",
-      name: "Posterior Chain Pull Bravo",
-      status: "Completed",
-      exercises: 5,
-      duration: 60,
-      calories: 510,
-      date: "2026-07-06",
-      readiness: "Moderate",
-      recovery: "Medium",
-      aiRecommendation: false,
-      category: "Pull"
-    },
-    {
-      id: "w-03",
-      name: "Anterior Quad Dominant Delta",
-      status: "Draft",
-      exercises: 7,
-      duration: 45,
-      calories: 400,
-      date: "2026-07-02",
-      readiness: "Rest Recommended",
-      recovery: "Low",
-      aiRecommendation: false,
-      category: "Legs"
-    }
-  ]);
+  const workouts = appData.workouts.workoutList;
 
-  const [activeUnfinishedWorkout] = useState({
-    name: "Hypertrophy Push Alpha",
-    completedExercises: 3,
-    totalExercises: 6,
-    elapsedMinutes: 32
-  });
+  const activeUnfinishedWorkout = appData.workouts.activeWorkout;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -179,13 +139,27 @@ const Workouts = () => {
       category: newWorkout.category
     };
 
-    setWorkouts([deployedNode, ...workouts]);
+    updateWorkout(prev => ({
+      ...prev,
+      workouts: {
+        ...prev.workouts,
+        workoutList: [deployedNode, ...prev.workouts.workoutList]
+      }
+    }));
     setNewWorkout({ name: "", notes: "", category: "Push" });
     setShowCreateModal(false);
   };
 
   const deleteWorkoutNode = (id) => {
-    setWorkouts(workouts.filter(w => w.id !== id));
+    updateWorkout(prev => ({
+      ...prev,
+      workouts: {
+        ...prev.workouts,
+        workoutList: prev.workouts.workoutList.filter(
+          workout => workout.id !== id
+        )
+      }
+    }));
   };
 
   const filteredWorkouts = workouts.filter(w => {
@@ -224,22 +198,22 @@ const Workouts = () => {
             <div className="wcc-stat-hud-box db-angle-tl">
               <div className="wcc-stat-hover-glare" />
               <span className="wcc-stat-lbl">WORKOUTS THIS WEEK</span>
-              <span className="wcc-stat-val text-cyan">5 <span className="wcc-stat-unit">SESSIONS</span></span>
+              <span className="wcc-stat-val text-cyan">{appData.user.weeklyWorkoutHours} <span className="wcc-stat-unit">SESSIONS</span></span>
             </div>
             <div className="wcc-stat-hud-box">
               <div className="wcc-stat-hover-glare" />
               <span className="wcc-stat-lbl">ENERGY EXPEDITION</span>
-              <span className="wcc-stat-val text-purple">2,450 <span className="wcc-stat-unit">KCAL</span></span>
+              <span className="wcc-stat-val text-purple">{appData.user.caloriesBurned} <span className="wcc-stat-unit">KCAL</span></span>
             </div>
             <div className="wcc-stat-hud-box">
               <div className="wcc-stat-hover-glare" />
               <span className="wcc-stat-lbl">TOTAL TIME LOAD</span>
-              <span className="wcc-stat-val">158 <span className="wcc-stat-unit">MINS</span></span>
+              <span className="wcc-stat-val">{appData.statistics.totalWorkoutMinutes} <span className="wcc-stat-unit">MINS</span></span>
             </div>
             <div className="wcc-stat-hud-box db-angle-tr">
               <div className="wcc-stat-hover-glare" />
               <span className="wcc-stat-lbl">LONGEST WORKOUT THREAD</span>
-              <span className="wcc-stat-val text-cyan">72 <span className="wcc-stat-unit">MINS</span></span>
+              <span className="wcc-stat-val text-cyan">{appData.statistics.longestWorkoutMinutes} <span className="wcc-stat-unit">MINS</span></span>
             </div>
           </div>
 
